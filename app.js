@@ -398,6 +398,15 @@ function doCheckIn(bridgeId) {
   if (state.activeTab === 'collection') renderCollection();
 }
 
+function removeCheckIn(bridgeId) {
+  if (!state.checkins[bridgeId]) return;
+  delete state.checkins[bridgeId];
+  saveCheckins();
+  updateMarkerIcon(bridgeId);
+  updateNearestCard();
+  if (state.activeTab === 'collection') renderCollection();
+}
+
 /* ─── CELEBRATION ────────────────────────────────────────────── */
 function showCelebration(bridge) {
   const overlay   = document.getElementById('celebration');
@@ -505,6 +514,15 @@ function populateModal(bridge) {
   const checkinBtn = document.getElementById('modal-checkin-btn');
   checkinBtn.textContent = crossed ? '✅ Check In Again' : '✅ Check In at This Bridge!';
   checkinBtn.onclick = () => { doCheckIn(bridge.id); closeBridgeModal(); };
+
+  // Remove check-in button (only visible when crossed)
+  const removeBtn = document.getElementById('modal-remove-checkin-btn');
+  if (crossed) {
+    removeBtn.classList.remove('hidden');
+    removeBtn.onclick = () => { removeCheckIn(bridge.id); closeBridgeModal(); };
+  } else {
+    removeBtn.classList.add('hidden');
+  }
 
   // Navigate button
   document.getElementById('modal-navigate-btn').onclick = () => navigateTo(bridge);
