@@ -169,7 +169,8 @@ input { font-family: inherit; }
   padding-top: var(--safe-top);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 10px;
   background: linear-gradient(to bottom, rgba(13,17,23,0.85) 0%, transparent 100%);
   z-index: 400;
   pointer-events: none;
