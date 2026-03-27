@@ -647,7 +647,17 @@ input { font-family: inherit; }
   overflow: hidden;
 }
 
+.modal-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-photo-img.hidden { display: none; }
+
 .modal-photo-icon { font-size: 56px; opacity: 0.5; }
+.modal-photo.has-image .modal-photo-icon { display: none; }
 
 .modal-name-row {
   display: flex;
