@@ -50,7 +50,15 @@ async function initApp() {
 
   hideLoading();
   initNav();   // wire up buttons first so UI is always responsive
-  initMap();
+
+  try {
+    initMap();
+  } catch (err) {
+    console.error('Map init failed:', err);
+    document.getElementById('map').innerHTML =
+      '<p style="color:#8b949e;padding:24px;text-align:center">⚠️ Map failed to load.<br>Check your internet connection and reload.</p>';
+  }
+
   startGPS();
   registerSW();
 }
