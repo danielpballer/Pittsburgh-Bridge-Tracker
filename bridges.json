@@ -58,8 +58,8 @@
   {
     "id": "david-mccullough-bridge",
     "name": "David McCullough Bridge",
-    "latitude": 40.4532,
-    "longitude": -79.9958,
+    "latitude": 40.4535,
+    "longitude": -79.9872,
     "yearBuilt": 1923,
     "length": 1392,
     "type": "bowstring arch",
@@ -142,8 +142,8 @@
   {
     "id": "hulton-bridge",
     "name": "Hulton Bridge",
-    "latitude": 40.5103,
-    "longitude": -79.8906,
+    "latitude": 40.5193,
+    "longitude": -79.8583,
     "yearBuilt": 1924,
     "length": 575,
     "type": "through truss",
@@ -212,7 +212,7 @@
   {
     "id": "hot-metal-bridge",
     "name": "Hot Metal Bridge",
-    "latitude": 40.4262,
+    "latitude": 40.4278,
     "longitude": -79.9762,
     "yearBuilt": 1900,
     "length": 760,
@@ -240,8 +240,8 @@
   {
     "id": "homestead-grays-bridge",
     "name": "Homestead Grays Bridge",
-    "latitude": 40.3992,
-    "longitude": -79.9082,
+    "latitude": 40.4051,
+    "longitude": -79.9073,
     "yearBuilt": 1936,
     "length": 1550,
     "type": "through truss",
@@ -296,7 +296,7 @@
   {
     "id": "mckees-rocks-bridge",
     "name": "McKees Rocks Bridge",
-    "latitude": 40.4815,
+    "latitude": 40.4741,
     "longitude": -80.0635,
     "yearBuilt": 1931,
     "length": 1000,
@@ -310,8 +310,8 @@
   {
     "id": "emsworth-bridge",
     "name": "Emsworth Bridge",
-    "latitude": 40.5012,
-    "longitude": -80.1013,
+    "latitude": 40.5031,
+    "longitude": -80.0921,
     "yearBuilt": 1930,
     "length": 680,
     "type": "through truss",
