@@ -375,36 +375,6 @@
     "wikipedia": "Sewickley_Bridge"
   },
   {
-    "id": "bridge_026",
-    "name": "Panhandle Bridge",
-    "latitude": 40.4407,
-    "longitude": -80.0032,
-    "yearBuilt": 1883,
-    "length": 1320,
-    "type": "through truss",
-    "crosses": "Monongahela River",
-    "carries": "Port Authority light rail (T) and Norfolk Southern rail traffic",
-    "neighborhood": "Downtown / South Shore",
-    "funFact": "The Panhandle Bridge is one of the oldest river crossings still in use in Pittsburgh, and today trains and light rail cars both cross it near Station Square.",
-    "image": null,
-    "wikipedia": "Panhandle_Bridge_(Pittsburgh)"
-  },
-  {
-    "id": "bridge_027",
-    "name": "30th Street Railroad Bridge",
-    "latitude": 40.4548,
-    "longitude": -79.9787,
-    "yearBuilt": 1900,
-    "length": 1400,
-    "type": "through truss",
-    "crosses": "Allegheny River",
-    "carries": "Norfolk Southern railroad tracks",
-    "neighborhood": "Strip District / Troy Hill",
-    "funFact": "Long freight trains still use this bridge to cross the Allegheny, linking Pittsburgh to rail routes across the region.",
-    "image": null,
-    "wikipedia": null
-  },
-  {
     "id": "bridge_028",
     "name": "Fort Wayne Railroad Bridge",
     "latitude": 40.4441,
@@ -416,21 +386,6 @@
     "carries": "Norfolk Southern railroad tracks and lower-deck pedestrian/bicycle trail",
     "neighborhood": "Downtown / North Shore",
     "funFact": "This bridge has an active upper railroad deck and a lower deck used by trail users to cross the Allegheny near Point State Park.",
-    "image": null,
-    "wikipedia": null
-  },
-  {
-    "id": "bridge_029",
-    "name": "Brilliant Branch Railroad Bridge",
-    "latitude": 40.4802,
-    "longitude": -79.9368,
-    "yearBuilt": 1904,
-    "length": 1510,
-    "type": "steel deck truss",
-    "crosses": "Allegheny River",
-    "carries": "Railroad tracks (Allegheny Valley Railroad)",
-    "neighborhood": "Highland Park / Aspinwall",
-    "funFact": "Rail lines crossing this bridge have helped move freight through the Allegheny Valley for more than a century.",
     "image": null,
     "wikipedia": null
   }
