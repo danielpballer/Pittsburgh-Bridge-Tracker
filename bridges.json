@@ -17,8 +17,8 @@
   {
     "id": "roberto-clemente-bridge",
     "name": "Roberto Clemente Bridge",
-    "latitude": 40.4433,
-    "longitude": -80.0027,
+    "latitude": 40.4436,
+    "longitude": -80.0023,
     "yearBuilt": 1928,
     "length": 884,
     "type": "self-anchored suspension",
@@ -32,8 +32,8 @@
   {
     "id": "andy-warhol-bridge",
     "name": "Andy Warhol Bridge",
-    "latitude": 40.4447,
-    "longitude": -80.0009,
+    "latitude": 40.4446,
+    "longitude": -80.0008,
     "yearBuilt": 1926,
     "length": 884,
     "type": "self-anchored suspension",
@@ -47,8 +47,8 @@
   {
     "id": "rachel-carson-bridge",
     "name": "Rachel Carson Bridge",
-    "latitude": 40.446,
-    "longitude": -79.9991,
+    "latitude": 40.4456,
+    "longitude": -79.9985,
     "yearBuilt": 1927,
     "length": 884,
     "type": "self-anchored suspension",
