@@ -41,17 +41,16 @@ async function initApp() {
   loadCheckins();
 
   try {
-    const resp = await fetch('bridges.json');
+    const resp = await fetch('./bridges.json');
     if (!resp.ok) throw new Error('Failed to load bridges.json');
     state.bridges = await resp.json();
   } catch (err) {
-    showGPSBanner('⚠️ Could not load bridge data. Please reload.', true);
-    console.error(err);
+    console.error('Bridge data load error:', err);
   }
 
   hideLoading();
+  initNav();   // wire up buttons first so UI is always responsive
   initMap();
-  initNav();
   startGPS();
   registerSW();
 }
@@ -530,7 +529,7 @@ function switchTab(tab) {
 
   if (tab === 'collection') renderCollection();
   if (tab === 'search')     renderSearch('');
-  if (tab === 'map')        state.map && setTimeout(() => state.map.invalidateSize(), 50);
+  if (tab === 'map' && state.map) setTimeout(() => state.map.invalidateSize(), 100);
 }
 
 /* ─── COLLECTION VIEW ────────────────────────────────────────── */

@@ -140,8 +140,10 @@ input { font-family: inherit; }
 .view.active { display: flex; flex-direction: column; }
 
 /* ─── MAP VIEW ───────────────────────────────────────────────── */
+/* NOTE: position comes from .view (position: absolute; inset: 0).
+   Do NOT add position: relative here — it would override the absolute
+   fill and collapse the map to zero height. */
 #map-view {
-  position: relative;
   overflow: hidden;
 }
 
