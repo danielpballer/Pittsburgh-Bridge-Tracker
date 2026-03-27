@@ -500,6 +500,28 @@ function populateModal(bridge) {
   document.getElementById('modal-crosses').textContent      = bridge.crosses                   || '—';
   document.getElementById('modal-carries').textContent      = bridge.carries                   || '—';
 
+  // Photo
+  const photoWrap = document.getElementById('modal-photo');
+  const photoImg  = document.getElementById('modal-photo-img');
+  if (bridge.image) {
+    photoImg.onerror = () => {
+      photoImg.src = '';
+      photoImg.alt = '';
+      photoImg.classList.add('hidden');
+      photoWrap.classList.remove('has-image');
+    };
+    photoImg.src = bridge.image;
+    photoImg.alt = `${bridge.name} photo`;
+    photoImg.classList.remove('hidden');
+    photoWrap.classList.add('has-image');
+  } else {
+    photoImg.onerror = null;
+    photoImg.src = '';
+    photoImg.alt = '';
+    photoImg.classList.add('hidden');
+    photoWrap.classList.remove('has-image');
+  }
+
   // Fun fact
   const factWrap = document.getElementById('modal-fun-fact-wrap');
   const factText = document.getElementById('modal-fun-fact');
