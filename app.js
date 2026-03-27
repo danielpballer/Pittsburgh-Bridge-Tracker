@@ -22,6 +22,25 @@ const state = {
   nearestDist: null,
 };
 
+/* ─── WIKIPEDIA IMAGE CACHE ──────────────────────────────────── */
+const wikiImageCache = {}; // { articleTitle: url | null }
+
+async function fetchWikiImage(title) {
+  if (wikiImageCache[title] !== undefined) return wikiImageCache[title];
+  try {
+    const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+    const resp = await fetch(url);
+    if (!resp.ok) { wikiImageCache[title] = null; return null; }
+    const data = await resp.json();
+    const imgUrl = data.thumbnail ? data.thumbnail.source : null;
+    wikiImageCache[title] = imgUrl;
+    return imgUrl;
+  } catch {
+    wikiImageCache[title] = null;
+    return null;
+  }
+}
+
 /* ─── CONSTANTS ──────────────────────────────────────────────── */
 const STORAGE_KEY     = 'pittsburgh-bridge-checkins';
 const CHECKIN_RADIUS  = 152;   // metres (~500 ft)
@@ -503,23 +522,39 @@ function populateModal(bridge) {
   // Photo
   const photoWrap = document.getElementById('modal-photo');
   const photoImg  = document.getElementById('modal-photo-img');
-  if (bridge.image) {
+
+  function showPhoto(url) {
     photoImg.onerror = () => {
       photoImg.src = '';
-      photoImg.alt = '';
       photoImg.classList.add('hidden');
       photoWrap.classList.remove('has-image');
     };
-    photoImg.src = bridge.image;
+    photoImg.src = url;
     photoImg.alt = `${bridge.name} photo`;
     photoImg.classList.remove('hidden');
     photoWrap.classList.add('has-image');
-  } else {
+  }
+
+  function clearPhoto() {
     photoImg.onerror = null;
     photoImg.src = '';
     photoImg.alt = '';
     photoImg.classList.add('hidden');
     photoWrap.classList.remove('has-image');
+  }
+
+  if (bridge.image) {
+    showPhoto(bridge.image);
+  } else if (bridge.wikipedia) {
+    clearPhoto();
+    fetchWikiImage(bridge.wikipedia).then(url => {
+      // Only update if this modal is still open for the same bridge
+      if (url && state.activeModal && state.activeModal.id === bridge.id) {
+        showPhoto(url);
+      }
+    });
+  } else {
+    clearPhoto();
   }
 
   // Fun fact
