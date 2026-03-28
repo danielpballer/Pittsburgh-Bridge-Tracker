@@ -287,8 +287,8 @@
   {
     "id": "mckeesport-duquesne-bridge",
     "name": "McKeesport\u2013Duquesne Bridge",
-    "latitude": 40.3652,
-    "longitude": -79.8587,
+    "latitude": 40.3580388,
+    "longitude": -79.8442253,
     "yearBuilt": 1931,
     "length": 620,
     "type": "through truss",
@@ -330,21 +330,6 @@
     "wikipedia": "McKees_Rocks_Bridge"
   },
   {
-    "id": "emsworth-bridge",
-    "name": "Emsworth Bridge",
-    "latitude": 40.51269,
-    "longitude": -80.09302,
-    "yearBuilt": 1930,
-    "length": 680,
-    "type": "through truss",
-    "crosses": "Ohio River",
-    "carries": "Route 65 / Ohio River Boulevard",
-    "neighborhood": "Emsworth / Ben Avon",
-    "funFact": "Just downstream are the Emsworth Locks and Dam, which work like a giant elevator for boats \u2014 raising and lowering water levels so large river barges can travel safely along the Ohio River. Without it, the water would be too shallow for big boats!",
-    "image": null,
-    "wikipedia": "Emsworth_Bridge_(Pennsylvania)"
-  },
-  {
     "id": "coraopolis-bridge",
     "name": "Coraopolis Bridge",
     "latitude": 40.51611,
@@ -377,8 +362,8 @@
   {
     "id": "bridge_028",
     "name": "Fort Wayne Railroad Bridge",
-    "latitude": 40.4441,
-    "longitude": -80.0037,
+    "latitude": 40.4480628,
+    "longitude": -79.9960782,
     "yearBuilt": 1901,
     "length": 1260,
     "type": "through truss",
