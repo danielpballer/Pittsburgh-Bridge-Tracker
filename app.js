@@ -78,6 +78,7 @@ async function initApp() {
 
   populateFilterDropdowns();
   initCollectionFilters();
+  initBackupButtons();
 
   hideLoading();
   initNav();   // wire up buttons first so UI is always responsive
@@ -131,6 +132,141 @@ function saveCheckins() {
       console.warn('LocalStorage quota exceeded');
     }
   }
+}
+
+/* ─── TOAST ──────────────────────────────────────────────────── */
+let _toastTimer = null;
+function showToast(msg, durationMs = 3000) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.remove('hidden', 'toast-hide');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => {
+    el.classList.add('toast-hide');
+    setTimeout(() => el.classList.add('hidden'), 350);
+  }, durationMs);
+}
+
+/* ─── EXPORT / IMPORT ────────────────────────────────────────── */
+function initBackupButtons() {
+  document.getElementById('export-btn').addEventListener('click', exportCheckins);
+  document.getElementById('import-btn').addEventListener('click', () => {
+    document.getElementById('import-file-input').click();
+  });
+  document.getElementById('import-file-input').addEventListener('change', e => {
+    const file = e.target.files[0];
+    e.target.value = '';   // reset so same file can be re-selected
+    if (file) readBackupFile(file);
+  });
+
+  // Confirm modal wiring
+  document.getElementById('import-confirm-backdrop').addEventListener('click', closeImportConfirm);
+  document.getElementById('import-confirm-cancel').addEventListener('click', closeImportConfirm);
+}
+
+function exportCheckins() {
+  const exportDate = new Date().toISOString();
+  const payload = {
+    exportDate,
+    appVersion:    'pittsburgh-bridge-tracker',
+    bridgesCrossed: getCrossedCount(),
+    checkins:       state.checkins,
+  };
+  const json  = JSON.stringify(payload, null, 2);
+  const blob  = new Blob([json], { type: 'application/json' });
+  const dateStr = exportDate.slice(0, 10);  // YYYY-MM-DD
+  const filename = `bridge-tracker-backup-${dateStr}.json`;
+
+  // Use Web Share API when available (iOS/Android) so it opens the share sheet
+  if (navigator.canShare && navigator.canShare({ files: [new File([blob], filename, { type: 'application/json' })] })) {
+    const file = new File([blob], filename, { type: 'application/json' });
+    navigator.share({ files: [file], title: 'Bridge Tracker Backup' })
+      .then(() => showToast('Backup saved!'))
+      .catch(err => { if (err.name !== 'AbortError') showToast('Export failed. Try again.'); });
+  } else {
+    // Fallback: trigger download
+    const url = URL.createObjectURL(blob);
+    const a   = document.createElement('a');
+    a.href     = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Backup saved!');
+  }
+}
+
+function readBackupFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    let data;
+    try {
+      data = JSON.parse(e.target.result);
+    } catch {
+      showToast('⚠️ Invalid file — not a valid backup.');
+      return;
+    }
+
+    // Validate structure
+    if (!data || typeof data.checkins !== 'object') {
+      showToast('⚠️ Invalid backup file format.');
+      return;
+    }
+
+    const backupDate   = data.exportDate ? fmtDate(data.exportDate) : 'unknown date';
+    const backupCount  = Object.keys(data.checkins).length;
+    const currentCount = getCrossedCount();
+
+    // Filter checkins to only known bridge IDs
+    const knownIds   = new Set(state.bridges.map(b => b.id));
+    const validCheckins = {};
+    let skipped = 0;
+    for (const [id, val] of Object.entries(data.checkins)) {
+      if (knownIds.has(id)) {
+        validCheckins[id] = val;
+      } else {
+        skipped++;
+      }
+    }
+    const validCount = Object.keys(validCheckins).length;
+
+    // Show confirm dialog
+    const body = `Backup from ${backupDate} contains ${backupCount} check-in${backupCount !== 1 ? 's' : ''}` +
+      (skipped > 0 ? ` (${skipped} bridge${skipped !== 1 ? 's' : ''} not in current data will be skipped)` : '') +
+      `.\n\nYou currently have ${currentCount} bridge${currentCount !== 1 ? 's' : ''} checked in.\n\nThis will replace your current check-in data.`;
+
+    document.getElementById('import-confirm-body').textContent = body;
+
+    const okBtn = document.getElementById('import-confirm-ok');
+    okBtn.onclick = () => {
+      applyImport(validCheckins, validCount, backupDate);
+      closeImportConfirm();
+    };
+
+    document.getElementById('import-confirm-modal').classList.remove('hidden');
+  };
+
+  reader.onerror = () => showToast('⚠️ Could not read file.');
+  reader.readAsText(file);
+}
+
+function applyImport(validCheckins, count, backupDate) {
+  state.checkins = validCheckins;
+  saveCheckins();
+
+  // Refresh map markers
+  state.bridges.forEach(b => updateMarkerIcon(b.id));
+  updateNearestCard();
+
+  // Refresh collection if currently visible
+  if (state.activeTab === 'collection') renderCollection();
+
+  showToast(`Restored ${count} bridge check-in${count !== 1 ? 's' : ''} from ${backupDate}`, 4000);
+}
+
+function closeImportConfirm() {
+  document.getElementById('import-confirm-modal').classList.add('hidden');
 }
 
 function isCheckedIn(bridgeId) {

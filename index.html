@@ -132,6 +132,12 @@
           <div id="progress-bar-fill" class="progress-bar-fill" style="width:0%"></div>
         </div>
         <div id="stats-row" class="stats-row"></div>
+        <!-- Backup / Restore row -->
+        <div class="backup-row">
+          <button id="export-btn" class="btn-backup">📤 Backup</button>
+          <button id="import-btn" class="btn-backup">📥 Restore</button>
+          <input id="import-file-input" type="file" accept=".json,application/json" class="hidden" aria-hidden="true">
+        </div>
       </div>
 
       <!-- Crossed bridges list -->
@@ -302,6 +308,23 @@
       </button>
     </div>
     <div class="confetti-container" id="confetti-container"></div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <!-- Import confirmation dialog -->
+  <div id="import-confirm-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="import-confirm-title">
+    <div class="modal-backdrop" id="import-confirm-backdrop"></div>
+    <div class="modal-sheet import-confirm-sheet">
+      <div class="modal-drag-handle"></div>
+      <h2 class="modal-title" id="import-confirm-title">Restore Backup?</h2>
+      <p id="import-confirm-body" class="import-confirm-body"></p>
+      <div class="modal-btn-stack">
+        <button id="import-confirm-ok" class="btn btn-primary btn-lg btn-full">Restore</button>
+        <button id="import-confirm-cancel" class="btn btn-ghost btn-lg btn-full">Cancel</button>
+      </div>
+    </div>
   </div>
 
   <!-- Leaflet JS -->
