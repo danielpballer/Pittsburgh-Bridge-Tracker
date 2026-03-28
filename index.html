@@ -84,6 +84,42 @@
         <h1 class="view-title">🏆 My Collection</h1>
       </div>
 
+      <!-- Filter & sort bar -->
+      <div id="collection-filter-bar">
+        <div class="filter-pills-row">
+          <button class="filter-pill active" data-status="all">All</button>
+          <button class="filter-pill" data-status="crossed">Crossed</button>
+          <button class="filter-pill" data-status="uncrossed">Uncrossed</button>
+          <button id="clear-filters-btn" class="filter-clear-btn hidden">✕ Clear</button>
+        </div>
+        <div class="filter-selects-row">
+          <select id="filter-sort" class="filter-select">
+            <option value="default">Sort: Default</option>
+            <option value="distance">Distance</option>
+            <option value="date-desc">Date Checked In</option>
+            <option value="name">Name A–Z</option>
+            <option value="year-asc">Year: Oldest</option>
+            <option value="year-desc">Year: Newest</option>
+            <option value="length-desc">Length: Longest</option>
+          </select>
+          <select id="filter-neighborhood" class="filter-select">
+            <option value="">Neighborhood</option>
+          </select>
+          <select id="filter-type" class="filter-select">
+            <option value="">Type</option>
+          </select>
+          <select id="filter-crosses" class="filter-select">
+            <option value="">Crosses</option>
+            <option value="river">River</option>
+            <option value="highway">Highway</option>
+            <option value="railroad">Railroad</option>
+            <option value="valley">Valley/Hollow</option>
+            <option value="creek">Creek/Run</option>
+          </select>
+        </div>
+        <div id="filter-count" class="filter-count-text hidden"></div>
+      </div>
+
       <!-- Progress section -->
       <div id="progress-section" class="card">
         <div class="progress-numbers">
@@ -99,7 +135,7 @@
       </div>
 
       <!-- Crossed bridges list -->
-      <div class="list-section">
+      <div class="list-section" id="crossed-section">
         <h2 class="list-heading">✅ Crossed Bridges</h2>
         <div id="crossed-list" class="bridge-list">
           <p class="empty-state">No bridges crossed yet!<br>Head to the map to get started. 🌉</p>
@@ -107,7 +143,7 @@
       </div>
 
       <!-- Uncrossed bridges list -->
-      <div class="list-section">
+      <div class="list-section" id="uncrossed-section">
         <h2 class="list-heading">⬜ Still to Cross</h2>
         <div id="uncrossed-list" class="bridge-list"></div>
       </div>

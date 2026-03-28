@@ -466,6 +466,116 @@ input { font-family: inherit; }
   color: var(--text);
 }
 
+/* ─── COLLECTION FILTER BAR ──────────────────────────────────── */
+#collection-filter-bar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 12px 8px;
+  position: sticky;
+  top: 53px; /* below .view-header */
+  z-index: 9;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-pills-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-pill {
+  padding: 5px 14px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.filter-pill.active {
+  background: var(--gold);
+  color: #000;
+  border-color: var(--gold);
+}
+
+.filter-pill:hover:not(.active) {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+.filter-clear-btn {
+  margin-left: auto;
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  background: transparent;
+  color: var(--red);
+  border: 1px solid var(--red);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.filter-clear-btn:hover {
+  background: rgba(248, 81, 73, 0.12);
+}
+
+.filter-selects-row {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.filter-selects-row::-webkit-scrollbar { display: none; }
+
+.filter-select {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238b949e'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 24px;
+  max-width: 140px;
+  transition: border-color 0.15s;
+}
+
+.filter-select:focus,
+.filter-select:not([value=""]):valid {
+  border-color: var(--gold);
+}
+
+/* Highlight selects that have a non-default value */
+.filter-select.active-filter {
+  border-color: var(--gold);
+  background-color: rgba(255, 182, 18, 0.08);
+}
+
+.filter-count-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 0 2px;
+  letter-spacing: 0.2px;
+}
+
 /* ─── BRIDGE LISTS ───────────────────────────────────────────── */
 .list-section {
   padding: 0 12px 12px;

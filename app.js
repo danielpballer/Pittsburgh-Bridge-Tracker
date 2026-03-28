@@ -22,6 +22,15 @@ const state = {
   nearestDist: null,
 };
 
+/* ─── FILTER STATE ───────────────────────────────────────────── */
+const filterState = {
+  status:       'all',     // 'all' | 'crossed' | 'uncrossed'
+  sort:         'default', // 'default' | 'distance' | 'date-desc' | 'name' | 'year-asc' | 'year-desc' | 'length-desc'
+  neighborhood: '',
+  type:         '',
+  crosses:      '',        // '' | 'river' | 'highway' | 'railroad' | 'valley' | 'creek'
+};
+
 /* ─── WIKIPEDIA IMAGE CACHE ──────────────────────────────────── */
 const wikiImageCache = {}; // { articleTitle: url | null }
 
@@ -66,6 +75,9 @@ async function initApp() {
   } catch (err) {
     console.error('Bridge data load error:', err);
   }
+
+  populateFilterDropdowns();
+  initCollectionFilters();
 
   hideLoading();
   initNav();   // wire up buttons first so UI is always responsive
@@ -615,6 +627,156 @@ function switchTab(tab) {
   if (tab === 'map' && state.map) setTimeout(() => state.map.invalidateSize(), 100);
 }
 
+/* ─── COLLECTION FILTERS ─────────────────────────────────────── */
+function getCrossesCategory(bridge) {
+  const c = (bridge.crosses || '').toLowerCase();
+  if (c.includes('river'))    return 'river';
+  if (c.includes('creek') || c.includes('run') || c.includes('hollow') && c.includes('fern'))
+                               return 'creek';
+  if (c.includes('i-') || c.includes('parkway'))  return 'highway';
+  if (c.includes('railroad') || c.includes('rail')) return 'railroad';
+  if (c.includes('hollow') || c.includes('ravine') || c.includes('valley')) return 'valley';
+  return '';
+}
+
+function populateFilterDropdowns() {
+  const neighborhoods = [...new Set(
+    state.bridges.map(b => b.neighborhood).filter(Boolean)
+  )].sort();
+  const types = [...new Set(
+    state.bridges.map(b => b.type).filter(Boolean)
+  )].sort();
+
+  const nSel = document.getElementById('filter-neighborhood');
+  neighborhoods.forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = n;
+    opt.textContent = n;
+    nSel.appendChild(opt);
+  });
+
+  const tSel = document.getElementById('filter-type');
+  types.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t;
+    opt.textContent = t.charAt(0).toUpperCase() + t.slice(1);
+    tSel.appendChild(opt);
+  });
+}
+
+function initCollectionFilters() {
+  // Status pills
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      filterState.status = pill.dataset.status;
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      renderCollection();
+    });
+  });
+
+  // Dropdowns
+  document.getElementById('filter-sort').addEventListener('change', e => {
+    filterState.sort = e.target.value;
+    renderCollection();
+  });
+  document.getElementById('filter-neighborhood').addEventListener('change', e => {
+    filterState.neighborhood = e.target.value;
+    renderCollection();
+  });
+  document.getElementById('filter-type').addEventListener('change', e => {
+    filterState.type = e.target.value;
+    renderCollection();
+  });
+  document.getElementById('filter-crosses').addEventListener('change', e => {
+    filterState.crosses = e.target.value;
+    renderCollection();
+  });
+
+  // Clear button
+  document.getElementById('clear-filters-btn').addEventListener('click', () => {
+    filterState.status       = 'all';
+    filterState.sort         = 'default';
+    filterState.neighborhood = '';
+    filterState.type         = '';
+    filterState.crosses      = '';
+
+    document.querySelectorAll('.filter-pill').forEach(p =>
+      p.classList.toggle('active', p.dataset.status === 'all'));
+    document.getElementById('filter-sort').value         = 'default';
+    document.getElementById('filter-neighborhood').value = '';
+    document.getElementById('filter-type').value         = '';
+    document.getElementById('filter-crosses').value      = '';
+
+    renderCollection();
+  });
+}
+
+function isFiltersActive() {
+  return filterState.status       !== 'all'     ||
+         filterState.sort         !== 'default'  ||
+         filterState.neighborhood !== ''         ||
+         filterState.type         !== ''         ||
+         filterState.crosses      !== '';
+}
+
+function applyBaseFilters(bridges) {
+  return bridges.filter(b => {
+    if (filterState.neighborhood && b.neighborhood !== filterState.neighborhood) return false;
+    if (filterState.type         && b.type         !== filterState.type)         return false;
+    if (filterState.crosses      && getCrossesCategory(b) !== filterState.crosses) return false;
+    return true;
+  });
+}
+
+function applySort(bridges, defaultCrossedSort) {
+  const sort = filterState.sort;
+  if (sort === 'default') {
+    if (defaultCrossedSort === 'date') {
+      return [...bridges].sort((a, b) =>
+        new Date(state.checkins[b.id].date) - new Date(state.checkins[a.id].date));
+    }
+    if (state.userPos) {
+      return [...bridges].sort((a, b) =>
+        haversine(state.userPos.lat, state.userPos.lng, a.latitude, a.longitude) -
+        haversine(state.userPos.lat, state.userPos.lng, b.latitude, b.longitude));
+    }
+    return [...bridges].sort((a, b) => a.name.localeCompare(b.name));
+  }
+  const arr = [...bridges];
+  switch (sort) {
+    case 'distance':
+      if (state.userPos) {
+        arr.sort((a, b) =>
+          haversine(state.userPos.lat, state.userPos.lng, a.latitude, a.longitude) -
+          haversine(state.userPos.lat, state.userPos.lng, b.latitude, b.longitude));
+      } else {
+        arr.sort((a, b) => a.name.localeCompare(b.name));
+      }
+      break;
+    case 'date-desc':
+      arr.sort((a, b) => {
+        const da = state.checkins[a.id] ? new Date(state.checkins[a.id].date) : new Date(0);
+        const db = state.checkins[b.id] ? new Date(state.checkins[b.id].date) : new Date(0);
+        return db - da;
+      });
+      break;
+    case 'name':
+      arr.sort((a, b) => a.name.localeCompare(b.name));
+      break;
+    case 'year-asc':
+      arr.sort((a, b) => (a.yearBuilt || 9999) - (b.yearBuilt || 9999));
+      break;
+    case 'year-desc':
+      arr.sort((a, b) => (b.yearBuilt || 0) - (a.yearBuilt || 0));
+      break;
+    case 'length-desc':
+      arr.sort((a, b) => (b.length || 0) - (a.length || 0));
+      break;
+  }
+  return arr;
+}
+
 /* ─── COLLECTION VIEW ────────────────────────────────────────── */
 function renderCollection() {
   const total   = state.bridges.length;
@@ -628,40 +790,74 @@ function renderCollection() {
   fill.style.width = pct + '%';
   document.getElementById('progress-bar-wrap').setAttribute('aria-valuenow', pct);
 
-  // Stats
   renderStats(crossed);
 
-  // Crossed list (most recent first)
-  const crossedBridges = state.bridges
-    .filter(b => isCheckedIn(b.id))
-    .sort((a, b) => new Date(state.checkins[b.id].date) - new Date(state.checkins[a.id].date));
+  // Determine which sections to show
+  const showCrossed   = filterState.status !== 'uncrossed';
+  const showUncrossed = filterState.status !== 'crossed';
+  document.getElementById('crossed-section').style.display   = showCrossed   ? '' : 'none';
+  document.getElementById('uncrossed-section').style.display = showUncrossed ? '' : 'none';
 
-  const crossedList = document.getElementById('crossed-list');
-  if (crossedBridges.length === 0) {
-    crossedList.innerHTML = '<p class="empty-state">No bridges crossed yet!<br>Head to the map to get started. 🌉</p>';
-  } else {
-    crossedList.innerHTML = crossedBridges.map(b => bridgeListItemHTML(b, 'crossed')).join('');
-    attachListItemListeners(crossedList);
+  // Base-filtered pools (neighborhood / type / crosses filters)
+  const allFiltered = applyBaseFilters(state.bridges);
+
+  let crossedCount = 0;
+  let uncrossedCount = 0;
+
+  // Crossed list
+  if (showCrossed) {
+    let crossedBridges = allFiltered.filter(b => isCheckedIn(b.id));
+    crossedBridges = applySort(crossedBridges, 'date');
+    crossedCount = crossedBridges.length;
+
+    const crossedList = document.getElementById('crossed-list');
+    if (crossedBridges.length === 0) {
+      crossedList.innerHTML = '<p class="empty-state">No crossed bridges match your filters.</p>';
+    } else {
+      crossedList.innerHTML = crossedBridges.map(b => bridgeListItemHTML(b, 'crossed')).join('');
+      attachListItemListeners(crossedList);
+    }
   }
 
-  // Uncrossed list (nearest first if GPS, else alphabetical)
-  const uncrossedBridges = state.bridges.filter(b => !isCheckedIn(b.id));
+  // Uncrossed list
+  if (showUncrossed) {
+    let uncrossedBridges = allFiltered.filter(b => !isCheckedIn(b.id));
+    uncrossedBridges = applySort(uncrossedBridges, 'distance');
+    uncrossedCount = uncrossedBridges.length;
 
-  if (state.userPos) {
-    uncrossedBridges.sort((a, b) =>
-      haversine(state.userPos.lat, state.userPos.lng, a.latitude, a.longitude) -
-      haversine(state.userPos.lat, state.userPos.lng, b.latitude, b.longitude)
-    );
-  } else {
-    uncrossedBridges.sort((a, b) => a.name.localeCompare(b.name));
+    const uncrossedList = document.getElementById('uncrossed-list');
+    if (uncrossedBridges.length === 0) {
+      const msg = filterState.status === 'uncrossed' && !isFiltersActive()
+        ? '<p class="empty-state">🏆 You\'ve crossed every bridge! Incredible!</p>'
+        : '<p class="empty-state">No uncrossed bridges match your filters.</p>';
+      uncrossedList.innerHTML = msg;
+    } else {
+      uncrossedList.innerHTML = uncrossedBridges.map(b => bridgeListItemHTML(b, 'uncrossed')).join('');
+      attachListItemListeners(uncrossedList);
+    }
   }
 
-  const uncrossedList = document.getElementById('uncrossed-list');
-  if (uncrossedBridges.length === 0) {
-    uncrossedList.innerHTML = '<p class="empty-state">🏆 You\'ve crossed every bridge! Incredible!</p>';
+  // Highlight active filter selects
+  ['filter-sort', 'filter-neighborhood', 'filter-type', 'filter-crosses'].forEach(id => {
+    const sel = document.getElementById(id);
+    const isActive = id === 'filter-sort'
+      ? filterState.sort !== 'default'
+      : sel.value !== '';
+    sel.classList.toggle('active-filter', isActive);
+  });
+
+  // Clear button & result count
+  const clearBtn   = document.getElementById('clear-filters-btn');
+  const countEl    = document.getElementById('filter-count');
+  const filtersOn  = isFiltersActive();
+  clearBtn.classList.toggle('hidden', !filtersOn);
+
+  if (filtersOn) {
+    const showing = (showCrossed ? crossedCount : 0) + (showUncrossed ? uncrossedCount : 0);
+    countEl.textContent = `Showing ${showing} of ${total} bridges`;
+    countEl.classList.remove('hidden');
   } else {
-    uncrossedList.innerHTML = uncrossedBridges.map(b => bridgeListItemHTML(b, 'uncrossed')).join('');
-    attachListItemListeners(uncrossedList);
+    countEl.classList.add('hidden');
   }
 }
 
