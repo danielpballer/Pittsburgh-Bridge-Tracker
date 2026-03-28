@@ -182,6 +182,18 @@
 
     </div><!-- /search-view -->
 
+    <!-- ─── BADGES VIEW ──────────────────────── -->
+    <div id="badges-view" class="view" role="main" aria-label="Badges view">
+
+      <div class="view-header">
+        <h1 class="view-title">🏅 Badges</h1>
+      </div>
+
+      <div id="badges-summary" class="badges-summary"></div>
+      <div id="badges-grid" class="badges-grid-wrap"></div>
+
+    </div><!-- /badges-view -->
+
   </div><!-- /app -->
 
   <!-- ─── BOTTOM NAVIGATION ────────────────────── -->
@@ -197,6 +209,10 @@
     <button class="nav-btn" data-tab="search" aria-label="Search" aria-selected="false">
       <span class="nav-icon">🔍</span>
       <span class="nav-label">Search</span>
+    </button>
+    <button class="nav-btn" data-tab="badges" aria-label="Badges" aria-selected="false">
+      <span class="nav-icon">🏅</span>
+      <span class="nav-label">Badges</span>
     </button>
   </nav>
 
@@ -308,6 +324,17 @@
       </button>
     </div>
     <div class="confetti-container" id="confetti-container"></div>
+  </div>
+
+  <!-- Badge unlock popup -->
+  <div id="badge-popup" class="badge-popup-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="badge-popup-name">
+    <div class="badge-popup-card">
+      <div class="badge-popup-new-label">🎉 Badge Unlocked!</div>
+      <span class="badge-popup-emoji" id="badge-popup-emoji">🏅</span>
+      <div class="badge-popup-name" id="badge-popup-name"></div>
+      <div class="badge-popup-desc" id="badge-popup-desc"></div>
+      <button id="badge-popup-dismiss" class="btn btn-gold btn-lg">Nice! 🎉</button>
+    </div>
   </div>
 
   <!-- Toast notification -->

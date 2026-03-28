@@ -22,6 +22,43 @@ const state = {
   nearestDist: null,
 };
 
+/* ─── BADGE DEFINITIONS ─────────────────────────────────────── */
+const BADGE_DEFS = [
+  // — Milestones —
+  { id: 'first_steps',     emoji: '🌉', name: 'First Steps',          category: 'milestone', desc: 'Cross your first bridge' },
+  { id: 'double_digits',   emoji: '🔟', name: 'Double Digits',        category: 'milestone', desc: 'Cross 10 bridges' },
+  { id: 'quarter_century', emoji: '🏅', name: 'Quarter Century',      category: 'milestone', desc: 'Cross 25 bridges' },
+  { id: 'fifty_counting',  emoji: '⭐', name: 'Fifty and Counting',   category: 'milestone', desc: 'Cross 50 bridges' },
+  { id: 'century_club',    emoji: '💯', name: 'Century Club',         category: 'milestone', desc: 'Cross 100 bridges' },
+  { id: 'halfway_there',   emoji: '🏆', name: 'Halfway There',        category: 'milestone', desc: 'Cross half of all bridges in the database' },
+  { id: 'bridge_master',   emoji: '👑', name: 'Bridge Master',        category: 'milestone', desc: 'Cross every bridge in the database' },
+  // — Rivers —
+  { id: 'allegheny',       emoji: '🟡', name: 'Allegheny Explorer',      category: 'river', desc: 'Cross all bridges over the Allegheny River' },
+  { id: 'monongahela',     emoji: '🔵', name: 'Monongahela Navigator',   category: 'river', desc: 'Cross all bridges over the Monongahela River' },
+  { id: 'ohio',            emoji: '🟢', name: 'Ohio Adventurer',         category: 'river', desc: 'Cross all bridges over the Ohio River' },
+  { id: 'three_rivers',    emoji: '🌊', name: 'Three Rivers Champion',   category: 'river', desc: 'Earn all three river badges' },
+  // — Speed & Streaks —
+  { id: 'bridge_blitz',    emoji: '⚡', name: 'Bridge Blitz',       category: 'speed', desc: 'Cross 5 bridges in a single day' },
+  { id: 'on_fire',         emoji: '🔥', name: 'On Fire',             category: 'speed', desc: 'Cross at least one bridge on 3 consecutive days' },
+  { id: 'weekly_warrior',  emoji: '🗓️', name: 'Weekly Warrior',     category: 'speed', desc: 'Cross at least one bridge on 7 consecutive days' },
+  { id: 'marathon',        emoji: '💪', name: 'Marathon',            category: 'speed', desc: 'Cross 10 bridges in a single day' },
+  // — Neighborhoods —
+  { id: 'neigh_complete',  emoji: '🏘️', name: 'Neighborhood Complete', category: 'neighborhood', desc: 'Cross every bridge in any single neighborhood' },
+  { id: 'well_traveled',   emoji: '🗺️', name: 'Well Traveled',         category: 'neighborhood', desc: 'Cross bridges in 10 different neighborhoods' },
+  { id: 'city_explorer',   emoji: '🌍', name: 'City Explorer',          category: 'neighborhood', desc: 'Cross bridges in 20 different neighborhoods' },
+  // — Bridge Types —
+  { id: 'truss_collector', emoji: '🔺', name: 'Truss Collector',    category: 'type', desc: 'Cross 5 truss bridges' },
+  { id: 'arch_enthusiast', emoji: '🌈', name: 'Arch Enthusiast',    category: 'type', desc: 'Cross 5 arch bridges' },
+  { id: 'type_sampler',    emoji: '🏗️', name: 'Type Sampler',      category: 'type', desc: 'Cross at least one bridge of every type in the database' },
+  // — Special —
+  { id: 'history_buff',    emoji: '📸', name: 'History Buff',       category: 'special', desc: 'Cross 10 bridges built before 1930' },
+  { id: 'modern_explorer', emoji: '🆕', name: 'Modern Explorer',    category: 'special', desc: 'Cross 5 bridges built after 2000' },
+  { id: 'going_distance',  emoji: '📏', name: 'Going the Distance', category: 'special', desc: 'Cross the longest bridge in the database' },
+  { id: 'old_faithful',    emoji: '🏛️', name: 'Old Faithful',      category: 'special', desc: 'Cross the oldest bridge in the database' },
+];
+
+let _badgeQueue = [];  // badges to show after celebration dismissal
+
 /* ─── FILTER STATE ───────────────────────────────────────────── */
 const filterState = {
   status:       'all',     // 'all' | 'crossed' | 'uncrossed'
@@ -79,6 +116,7 @@ async function initApp() {
   populateFilterDropdowns();
   initCollectionFilters();
   initBackupButtons();
+  initBadgePopup();
 
   hideLoading();
   initNav();   // wire up buttons first so UI is always responsive
@@ -168,8 +206,9 @@ function exportCheckins() {
   const exportDate = new Date().toISOString();
   const payload = {
     exportDate,
-    appVersion:    'pittsburgh-bridge-tracker',
+    appVersion:     'pittsburgh-bridge-tracker',
     bridgesCrossed: getCrossedCount(),
+    badgesEarned:   evaluateBadges().filter(r => r.earned).length,
     checkins:       state.checkins,
   };
   const json  = JSON.stringify(payload, null, 2);
@@ -259,8 +298,8 @@ function applyImport(validCheckins, count, backupDate) {
   state.bridges.forEach(b => updateMarkerIcon(b.id));
   updateNearestCard();
 
-  // Refresh collection if currently visible
   if (state.activeTab === 'collection') renderCollection();
+  if (state.activeTab === 'badges')    renderBadges();
 
   showToast(`Restored ${count} bridge check-in${count !== 1 ? 's' : ''} from ${backupDate}`, 4000);
 }
@@ -544,6 +583,9 @@ function doCheckIn(bridgeId) {
   const bridge = state.bridges.find(b => b.id === bridgeId);
   if (!bridge) return;
 
+  // Snapshot earned badges BEFORE this check-in
+  const prevEarnedIds = new Set(evaluateBadges().filter(r => r.earned).map(r => r.def.id));
+
   const existing = state.checkins[bridgeId];
   state.checkins[bridgeId] = {
     date:  new Date().toISOString(),
@@ -554,15 +596,18 @@ function doCheckIn(bridgeId) {
   updateMarkerIcon(bridgeId);
   updateNearestCard();
 
-  // Close modal if it's showing this bridge
   if (state.activeModal && state.activeModal.id === bridgeId) {
-    populateModal(bridge); // refresh modal content
+    populateModal(bridge);
   }
+
+  // Queue any newly earned badges (shown after celebration is dismissed)
+  const newlyEarned = evaluateBadges().filter(r => r.earned && !prevEarnedIds.has(r.def.id));
+  _badgeQueue.push(...newlyEarned);
 
   showCelebration(bridge);
 
-  // Refresh collection if it's open
   if (state.activeTab === 'collection') renderCollection();
+  if (state.activeTab === 'badges')    renderBadges();
 }
 
 function removeCheckIn(bridgeId) {
@@ -572,6 +617,7 @@ function removeCheckIn(bridgeId) {
   updateMarkerIcon(bridgeId);
   updateNearestCard();
   if (state.activeTab === 'collection') renderCollection();
+  if (state.activeTab === 'badges')    renderBadges();
 }
 
 /* ─── CELEBRATION ────────────────────────────────────────────── */
@@ -605,6 +651,24 @@ function showCelebration(bridge) {
 function hideCelebration() {
   document.getElementById('celebration').classList.add('hidden');
   document.getElementById('confetti-container').innerHTML = '';
+  showNextBadgePopup();
+}
+
+/* ─── BADGE POPUP ────────────────────────────────────────────── */
+function initBadgePopup() {
+  document.getElementById('badge-popup-dismiss').addEventListener('click', () => {
+    document.getElementById('badge-popup').classList.add('hidden');
+    showNextBadgePopup();
+  });
+}
+
+function showNextBadgePopup() {
+  if (_badgeQueue.length === 0) return;
+  const { def } = _badgeQueue.shift();
+  document.getElementById('badge-popup-emoji').textContent = def.emoji;
+  document.getElementById('badge-popup-name').textContent  = def.name;
+  document.getElementById('badge-popup-desc').textContent  = def.desc;
+  document.getElementById('badge-popup').classList.remove('hidden');
 }
 
 function spawnConfetti() {
@@ -760,7 +824,377 @@ function switchTab(tab) {
 
   if (tab === 'collection') renderCollection();
   if (tab === 'search')     renderSearch('');
+  if (tab === 'badges')     renderBadges();
   if (tab === 'map' && state.map) setTimeout(() => state.map.invalidateSize(), 100);
+}
+
+/* ─── BADGE EVALUATION ───────────────────────────────────────── */
+function evaluateBadges() {
+  if (!state.bridges.length) {
+    return BADGE_DEFS.map(def => ({ def, earned: false, earnedDate: null, progress: null, hint: def.desc }));
+  }
+
+  const checkedIds      = new Set(Object.keys(state.checkins));
+  const crossedBridges  = state.bridges.filter(b => checkedIds.has(b.id));
+  const total           = crossedBridges.length;
+  const totalBridges    = state.bridges.length;
+
+  // Check-ins sorted ascending by date
+  const sortedCI = Object.entries(state.checkins)
+    .sort(([,a],[,b]) => a.date < b.date ? -1 : 1);
+
+  // Nth check-in date (1-indexed)
+  const nthDate = n => sortedCI.length >= n ? sortedCI[n-1][1].date : null;
+
+  // Max check-in date among a set of bridges
+  const maxDateOf = bs => {
+    const dates = bs.filter(b => checkedIds.has(b.id)).map(b => state.checkins[b.id].date);
+    return dates.length ? dates.reduce((a, b) => a > b ? a : b) : null;
+  };
+
+  // Nth date from a sorted array of crossed bridges (by check-in date)
+  const nthCrossedDate = (bs, n) => {
+    if (bs.length < n) return null;
+    return [...bs].map(b => state.checkins[b.id].date).sort()[n - 1];
+  };
+
+  // ── River data ──────────────────────────────────────────────
+  const rivBridges = {
+    a: state.bridges.filter(b => (b.crosses||'').includes('Allegheny River')),
+    m: state.bridges.filter(b => (b.crosses||'').includes('Monongahela River')),
+    o: state.bridges.filter(b => (b.crosses||'').includes('Ohio River')),
+  };
+  const rivCrossed = {
+    a: rivBridges.a.filter(b => checkedIds.has(b.id)).length,
+    m: rivBridges.m.filter(b => checkedIds.has(b.id)).length,
+    o: rivBridges.o.filter(b => checkedIds.has(b.id)).length,
+  };
+  const rivDone = {
+    a: rivCrossed.a === rivBridges.a.length,
+    m: rivCrossed.m === rivBridges.m.length,
+    o: rivCrossed.o === rivBridges.o.length,
+  };
+  const rivDate = {
+    a: rivDone.a ? maxDateOf(rivBridges.a) : null,
+    m: rivDone.m ? maxDateOf(rivBridges.m) : null,
+    o: rivDone.o ? maxDateOf(rivBridges.o) : null,
+  };
+  const threeRiversDone = rivDone.a && rivDone.m && rivDone.o;
+  const threeRiversDate = threeRiversDone
+    ? [rivDate.a, rivDate.m, rivDate.o].reduce((a, b) => a > b ? a : b)
+    : null;
+
+  // ── Streak data ──────────────────────────────────────────────
+  const uniqueDays = [...new Set(sortedCI.map(([,v]) => v.date.slice(0, 10)))].sort();
+  let maxStreak = uniqueDays.length > 0 ? 1 : 0;
+  let curStreak = uniqueDays.length > 0 ? 1 : 0;
+  let streak3Date = null, streak7Date = null;
+  for (let i = 1; i < uniqueDays.length; i++) {
+    const diff = Math.round(
+      (new Date(uniqueDays[i] + 'T12:00:00Z') - new Date(uniqueDays[i-1] + 'T12:00:00Z')) / 86400000
+    );
+    if (diff === 1) {
+      curStreak++;
+      maxStreak = Math.max(maxStreak, curStreak);
+      if (curStreak >= 3 && !streak3Date) streak3Date = uniqueDays[i] + 'T23:59:59.000Z';
+      if (curStreak >= 7 && !streak7Date) streak7Date = uniqueDays[i] + 'T23:59:59.000Z';
+    } else {
+      curStreak = 1;
+    }
+  }
+
+  // ── Per-day counts ────────────────────────────────────────────
+  const dayMap = {};
+  for (const [,v] of sortedCI) {
+    const d = v.date.slice(0, 10);
+    if (!dayMap[d]) dayMap[d] = { count: 0, lastDate: null };
+    dayMap[d].count++;
+    dayMap[d].lastDate = v.date;
+  }
+  let blitzDate = null, marathonDate = null, maxDayCount = 0;
+  for (const [day, info] of Object.entries(dayMap).sort(([a],[b]) => a < b ? -1 : 1)) {
+    maxDayCount = Math.max(maxDayCount, info.count);
+    if (info.count >= 5  && !blitzDate)   blitzDate   = info.lastDate;
+    if (info.count >= 10 && !marathonDate) marathonDate = info.lastDate;
+  }
+
+  // ── Neighborhood data ─────────────────────────────────────────
+  const neighMap = {};
+  for (const b of state.bridges) {
+    const n = b.neighborhood; if (!n) continue;
+    if (!neighMap[n]) neighMap[n] = { total: 0, crossed: 0, dates: [] };
+    neighMap[n].total++;
+    if (checkedIds.has(b.id)) {
+      neighMap[n].crossed++;
+      neighMap[n].dates.push(state.checkins[b.id].date);
+    }
+  }
+  const completedNeighs = Object.entries(neighMap)
+    .filter(([,v]) => v.crossed === v.total && v.total > 0)
+    .map(([,v]) => ({ date: v.dates.reduce((a, b) => a > b ? a : b) }))
+    .sort((a, b) => a.date < b.date ? -1 : 1);
+
+  const crossedNeighCount = new Set(
+    crossedBridges.filter(b => b.neighborhood).map(b => b.neighborhood)
+  ).size;
+
+  // Date when Nth unique neighborhood was first entered
+  const neighDateForN = n => {
+    if (crossedNeighCount < n) return null;
+    const seen = new Set();
+    for (const [id, v] of sortedCI) {
+      const bridge = state.bridges.find(b => b.id === id);
+      if (bridge && bridge.neighborhood && !seen.has(bridge.neighborhood)) {
+        seen.add(bridge.neighborhood);
+        if (seen.size === n) return v.date;
+      }
+    }
+    return null;
+  };
+
+  // Best locked neighborhood for hint
+  const bestLockedNeigh = Object.entries(neighMap)
+    .filter(([,v]) => v.crossed < v.total && v.total > 1)
+    .sort(([,a],[,b]) => (b.crossed / b.total) - (a.crossed / a.total))[0];
+
+  // ── Type data ─────────────────────────────────────────────────
+  const allTypes       = [...new Set(state.bridges.map(b => b.type).filter(Boolean))];
+  const trussCrossed   = crossedBridges.filter(b => (b.type||'').toLowerCase().includes('truss'));
+  const archCrossed    = crossedBridges.filter(b => (b.type||'').toLowerCase().includes('arch'));
+  const crossedTypeSet = new Set(crossedBridges.map(b => b.type).filter(Boolean));
+
+  // When all types were first sampled
+  const typeSamplerDate = (() => {
+    if (crossedTypeSet.size < allTypes.length) return null;
+    const firstSeen = {};
+    for (const [id, v] of sortedCI) {
+      const bridge = state.bridges.find(b => b.id === id);
+      if (bridge && bridge.type && !firstSeen[bridge.type]) firstSeen[bridge.type] = v.date;
+    }
+    return allTypes.every(t => firstSeen[t])
+      ? allTypes.map(t => firstSeen[t]).reduce((a, b) => a > b ? a : b)
+      : null;
+  })();
+
+  // ── Special bridges ───────────────────────────────────────────
+  const before1930 = crossedBridges.filter(b => b.yearBuilt && b.yearBuilt < 1930);
+  const after2000  = crossedBridges.filter(b => b.yearBuilt && b.yearBuilt > 2000);
+
+  const longestBridge = [...state.bridges].sort((a, b) => (b.length||0) - (a.length||0))[0];
+  const oldestBridge  = state.bridges.filter(b => b.yearBuilt).sort((a, b) => a.yearBuilt - b.yearBuilt)[0];
+
+  const halfway = Math.ceil(totalBridges / 2);
+
+  // ── Evaluate each badge ───────────────────────────────────────
+  return BADGE_DEFS.map(def => {
+    let earned = false, earnedDate = null, progress = null, hint = def.desc;
+
+    switch (def.id) {
+      case 'first_steps':
+        earned = total >= 1;  earnedDate = nthDate(1);
+        progress = { current: Math.min(total, 1), target: 1 };
+        hint = total < 1 ? 'Cross your first bridge' : hint;
+        break;
+      case 'double_digits':
+        earned = total >= 10; earnedDate = nthDate(10);
+        progress = { current: Math.min(total, 10), target: 10 };
+        hint = `Cross 10 bridges — ${total}/10`;
+        break;
+      case 'quarter_century':
+        earned = total >= 25; earnedDate = nthDate(25);
+        progress = { current: Math.min(total, 25), target: 25 };
+        hint = `Cross 25 bridges — ${total}/25`;
+        break;
+      case 'fifty_counting':
+        earned = total >= 50; earnedDate = nthDate(50);
+        progress = { current: Math.min(total, 50), target: 50 };
+        hint = `Cross 50 bridges — ${total}/50`;
+        break;
+      case 'century_club':
+        earned = total >= 100; earnedDate = nthDate(100);
+        progress = { current: Math.min(total, 100), target: 100 };
+        hint = `Cross 100 bridges — ${total}/100`;
+        break;
+      case 'halfway_there':
+        earned = total >= halfway; earnedDate = nthDate(halfway);
+        progress = { current: Math.min(total, halfway), target: halfway };
+        hint = `Cross ${halfway} of ${totalBridges} bridges — ${total}/${halfway}`;
+        break;
+      case 'bridge_master':
+        earned = total >= totalBridges; earnedDate = nthDate(totalBridges);
+        progress = { current: total, target: totalBridges };
+        hint = `Cross all ${totalBridges} bridges — ${total}/${totalBridges}`;
+        break;
+
+      case 'allegheny':
+        earned = rivDone.a; earnedDate = rivDate.a;
+        progress = { current: rivCrossed.a, target: rivBridges.a.length };
+        hint = `Cross all ${rivBridges.a.length} Allegheny River bridges — ${rivCrossed.a}/${rivBridges.a.length}`;
+        break;
+      case 'monongahela':
+        earned = rivDone.m; earnedDate = rivDate.m;
+        progress = { current: rivCrossed.m, target: rivBridges.m.length };
+        hint = `Cross all ${rivBridges.m.length} Monongahela River bridges — ${rivCrossed.m}/${rivBridges.m.length}`;
+        break;
+      case 'ohio':
+        earned = rivDone.o; earnedDate = rivDate.o;
+        progress = { current: rivCrossed.o, target: rivBridges.o.length };
+        hint = `Cross all ${rivBridges.o.length} Ohio River bridges — ${rivCrossed.o}/${rivBridges.o.length}`;
+        break;
+      case 'three_rivers':
+        earned = threeRiversDone; earnedDate = threeRiversDate;
+        progress = {
+          current: (rivDone.a ? 1 : 0) + (rivDone.m ? 1 : 0) + (rivDone.o ? 1 : 0),
+          target: 3,
+        };
+        hint = `Earn all 3 river badges — ${progress.current}/3`;
+        break;
+
+      case 'bridge_blitz':
+        earned = maxDayCount >= 5; earnedDate = blitzDate;
+        progress = { current: Math.min(maxDayCount, 5), target: 5 };
+        hint = `Cross 5 bridges in one day — best: ${maxDayCount}/5`;
+        break;
+      case 'on_fire':
+        earned = maxStreak >= 3; earnedDate = streak3Date;
+        progress = { current: Math.min(maxStreak, 3), target: 3 };
+        hint = `3 days in a row — best streak: ${maxStreak} day${maxStreak !== 1 ? 's' : ''}`;
+        break;
+      case 'weekly_warrior':
+        earned = maxStreak >= 7; earnedDate = streak7Date;
+        progress = { current: Math.min(maxStreak, 7), target: 7 };
+        hint = `7 days in a row — best streak: ${maxStreak} day${maxStreak !== 1 ? 's' : ''}`;
+        break;
+      case 'marathon':
+        earned = maxDayCount >= 10; earnedDate = marathonDate;
+        progress = { current: Math.min(maxDayCount, 10), target: 10 };
+        hint = `Cross 10 bridges in one day — best: ${maxDayCount}/10`;
+        break;
+
+      case 'neigh_complete':
+        earned = completedNeighs.length > 0; earnedDate = completedNeighs[0]?.date ?? null;
+        progress = null;
+        hint = bestLockedNeigh
+          ? `Complete any neighborhood — ${bestLockedNeigh[0]}: ${bestLockedNeigh[1].crossed}/${bestLockedNeigh[1].total}`
+          : 'Cross every bridge in any single neighborhood';
+        break;
+      case 'well_traveled':
+        earned = crossedNeighCount >= 10; earnedDate = neighDateForN(10);
+        progress = { current: Math.min(crossedNeighCount, 10), target: 10 };
+        hint = `Bridges in 10 neighborhoods — ${crossedNeighCount}/10`;
+        break;
+      case 'city_explorer':
+        earned = crossedNeighCount >= 20; earnedDate = neighDateForN(20);
+        progress = { current: Math.min(crossedNeighCount, 20), target: 20 };
+        hint = `Bridges in 20 neighborhoods — ${crossedNeighCount}/20`;
+        break;
+
+      case 'truss_collector':
+        earned = trussCrossed.length >= 5; earnedDate = nthCrossedDate(trussCrossed, 5);
+        progress = { current: Math.min(trussCrossed.length, 5), target: 5 };
+        hint = `Cross 5 truss bridges — ${trussCrossed.length}/5`;
+        break;
+      case 'arch_enthusiast':
+        earned = archCrossed.length >= 5; earnedDate = nthCrossedDate(archCrossed, 5);
+        progress = { current: Math.min(archCrossed.length, 5), target: 5 };
+        hint = `Cross 5 arch bridges — ${archCrossed.length}/5`;
+        break;
+      case 'type_sampler':
+        earned = crossedTypeSet.size >= allTypes.length; earnedDate = typeSamplerDate;
+        progress = { current: crossedTypeSet.size, target: allTypes.length };
+        hint = `One of every bridge type — ${crossedTypeSet.size}/${allTypes.length} types`;
+        break;
+
+      case 'history_buff':
+        earned = before1930.length >= 10; earnedDate = nthCrossedDate(before1930, 10);
+        progress = { current: Math.min(before1930.length, 10), target: 10 };
+        hint = `Cross 10 pre-1930 bridges — ${before1930.length}/10`;
+        break;
+      case 'modern_explorer':
+        earned = after2000.length >= 5; earnedDate = nthCrossedDate(after2000, 5);
+        progress = { current: Math.min(after2000.length, 5), target: 5 };
+        hint = `Cross 5 post-2000 bridges — ${after2000.length}/5`;
+        break;
+      case 'going_distance':
+        earned = longestBridge && checkedIds.has(longestBridge.id);
+        earnedDate = earned ? state.checkins[longestBridge.id].date : null;
+        progress = null;
+        hint = longestBridge
+          ? `Cross ${longestBridge.name} (${(longestBridge.length||0).toLocaleString()} ft)`
+          : def.desc;
+        break;
+      case 'old_faithful':
+        earned = oldestBridge && checkedIds.has(oldestBridge.id);
+        earnedDate = earned ? state.checkins[oldestBridge.id].date : null;
+        progress = null;
+        hint = oldestBridge
+          ? `Cross ${oldestBridge.name} (built ${oldestBridge.yearBuilt})`
+          : def.desc;
+        break;
+    }
+
+    return { def, earned: Boolean(earned), earnedDate, progress, hint };
+  });
+}
+
+/* ─── RENDER BADGES ──────────────────────────────────────────── */
+function renderBadges() {
+  const results    = evaluateBadges();
+  const earnedCount = results.filter(r => r.earned).length;
+
+  document.getElementById('badges-summary').innerHTML =
+    `<span class="badges-earned-count">${earnedCount}</span> of ${results.length} badges unlocked`;
+
+  const categories = [
+    { key: 'milestone',    label: '🏁 Milestones' },
+    { key: 'river',        label: '🌊 River Badges' },
+    { key: 'speed',        label: '⚡ Speed & Streaks' },
+    { key: 'neighborhood', label: '🏘️ Neighborhoods' },
+    { key: 'type',         label: '🔺 Bridge Types' },
+    { key: 'special',      label: '✨ Special' },
+  ];
+
+  document.getElementById('badges-grid').innerHTML = categories.map(cat => {
+    const badges = results.filter(r => r.def.category === cat.key);
+    return `
+      <div class="badge-category">
+        <h2 class="badge-cat-label">${cat.label}</h2>
+        <div class="badge-grid-row">
+          ${badges.map(r => badgeCardHTML(r)).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function badgeCardHTML({ def, earned, earnedDate, progress, hint }) {
+  if (earned) {
+    return `
+      <div class="badge-card badge-earned">
+        <span class="badge-emoji">${def.emoji}</span>
+        <div class="badge-name">${def.name}</div>
+        <div class="badge-earned-date">Earned ${earnedDate ? fmtDate(earnedDate) : '✓'}</div>
+      </div>`;
+  }
+
+  let progressHTML = '';
+  if (progress) {
+    const pct = Math.min(100, Math.round((progress.current / progress.target) * 100));
+    progressHTML = `
+      <div class="badge-progress">
+        <div class="badge-progress-bar">
+          <div class="badge-progress-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="badge-progress-text">${progress.current} / ${progress.target}</div>
+      </div>`;
+  }
+
+  return `
+    <div class="badge-card badge-locked">
+      <span class="badge-emoji badge-emoji-locked">${def.emoji}</span>
+      <div class="badge-name badge-name-locked">${def.name}</div>
+      <div class="badge-hint">${escHtml(hint)}</div>
+      ${progressHTML}
+    </div>`;
 }
 
 /* ─── COLLECTION FILTERS ─────────────────────────────────────── */

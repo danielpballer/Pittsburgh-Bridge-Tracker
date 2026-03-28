@@ -1073,6 +1073,191 @@ input { font-family: inherit; }
   gap: 6px;
 }
 
+/* ─── BADGES VIEW ────────────────────────────────────────────── */
+.badges-summary {
+  padding: 14px 16px 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.badges-earned-count {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.badges-grid-wrap {
+  padding: 0 12px 20px;
+}
+
+.badge-category {
+  margin-top: 4px;
+}
+
+.badge-cat-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 14px 2px 8px;
+}
+
+.badge-grid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.badge-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.badge-earned {
+  border-color: rgba(255, 182, 18, 0.45);
+  background: linear-gradient(145deg, var(--surface) 0%, rgba(255, 182, 18, 0.07) 100%);
+}
+
+.badge-locked {
+  opacity: 0.6;
+}
+
+.badge-emoji {
+  font-size: 34px;
+  line-height: 1;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.badge-emoji-locked {
+  filter: grayscale(0.8);
+  opacity: 0.5;
+}
+
+.badge-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.badge-name-locked {
+  color: var(--text-muted);
+}
+
+.badge-earned-date {
+  font-size: 11px;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.badge-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.4;
+  margin-top: 1px;
+}
+
+.badge-progress {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.badge-progress-bar {
+  height: 3px;
+  background: var(--surface-3);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 3px;
+}
+
+.badge-progress-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.badge-progress-text {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+/* ─── BADGE UNLOCK POPUP ─────────────────────────────────────── */
+.badge-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.badge-popup-overlay.hidden { display: none; }
+
+.badge-popup-card {
+  background: var(--surface);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px 24px;
+  text-align: center;
+  max-width: 300px;
+  width: 100%;
+  box-shadow: 0 0 48px rgba(255, 182, 18, 0.22);
+  animation: badge-popup-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes badge-popup-in {
+  from { opacity: 0; transform: scale(0.82) translateY(16px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+.badge-popup-new-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.badge-popup-emoji {
+  font-size: 68px;
+  line-height: 1;
+  display: block;
+  margin: 0 auto 14px;
+}
+
+.badge-popup-name {
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.badge-popup-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
+
 /* ─── BACKUP BUTTONS ─────────────────────────────────────────── */
 .backup-row {
   display: flex;
