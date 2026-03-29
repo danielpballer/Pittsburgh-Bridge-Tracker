@@ -422,8 +422,8 @@
   {
     "id": "bridge_033",
     "name": "Bloomfield Bridge",
-    "latitude": 40.4601,
-    "longitude": -79.9680,
+    "latitude": 40.4610843,
+    "longitude": -79.9552613,
     "yearBuilt": 1914,
     "length": 576,
     "type": "cantilever through truss",
@@ -465,21 +465,6 @@
     "wikipedia": null
   },
   {
-    "id": "bridge_036",
-    "name": "Bigelow Boulevard Bridge",
-    "latitude": 40.4571,
-    "longitude": -79.9541,
-    "yearBuilt": null,
-    "length": null,
-    "type": "concrete viaduct",
-    "crosses": "Railroad tracks / ravine",
-    "carries": "Bigelow Boulevard",
-    "neighborhood": "Oakland / North Oakland",
-    "funFact": "Bigelow Boulevard was part of Pittsburgh's early 1900s vision to connect neighborhoods with scenic parkways — so crossing this bridge feels like a trip back to the golden age of city planning!",
-    "image": null,
-    "wikipedia": null
-  },
-  {
     "id": "bridge_037",
     "name": "Brilliant Avenue Bridge",
     "latitude": 40.4758,
@@ -497,8 +482,8 @@
   {
     "id": "bridge_041",
     "name": "Larimer Avenue Bridge",
-    "latitude": 40.4672,
-    "longitude": -79.9307,
+    "latitude": 40.4674764,
+    "longitude": -79.9087361,
     "yearBuilt": null,
     "length": null,
     "type": "steel girder",
@@ -572,8 +557,8 @@
   {
     "id": "bridge_047",
     "name": "Herron Avenue Bridge",
-    "latitude": 40.4558,
-    "longitude": -79.9623,
+    "latitude": 40.4602032,
+    "longitude": -79.9664448,
     "yearBuilt": null,
     "length": null,
     "type": "steel girder",
@@ -587,8 +572,8 @@
   {
     "id": "bridge_049",
     "name": "Negley Avenue Bridge",
-    "latitude": 40.4607,
-    "longitude": -79.9338,
+    "latitude": 40.4562511,
+    "longitude": -79.9335086,
     "yearBuilt": null,
     "length": null,
     "type": "steel girder",
@@ -602,8 +587,8 @@
   {
     "id": "bridge_051",
     "name": "Penn Avenue Viaduct",
-    "latitude": 40.4639,
-    "longitude": -79.9206,
+    "latitude": 40.4600374,
+    "longitude": -79.9210984,
     "yearBuilt": null,
     "length": null,
     "type": "steel viaduct",
