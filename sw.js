@@ -51,7 +51,21 @@ self.addEventListener('fetch', event => {
     return; // browser handles it normally
   }
 
-  // For everything else: cache-first, fall back to network
+  // Network-first for HTML navigation — ensures latest shell on every reload
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          return response;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // Cache-first for everything else (JS, CSS, JSON, icons)
   event.respondWith(
     caches.match(event.request)
       .then(cached => {
@@ -70,13 +84,7 @@ self.addEventListener('fetch', event => {
             }
             return response;
           })
-          .catch(() => {
-            // Offline fallback for navigation requests
-            if (event.request.mode === 'navigate') {
-              return caches.match('./index.html');
-            }
-            return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
-          });
+          .catch(() => new Response('Offline', { status: 503, statusText: 'Service Unavailable' }));
       })
   );
 });
