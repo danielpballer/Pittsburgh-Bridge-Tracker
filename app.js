@@ -1064,7 +1064,7 @@ document.getElementById('modal-backdrop').addEventListener('click', closeBridgeM
 
 /* ─── NAVIGATION ─────────────────────────────────────────────── */
 function initNav() {
-  document.querySelectorAll('.nav-btn').forEach(btn => {
+  document.querySelectorAll('.nav-btn[data-tab]').forEach(btn => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
 }
@@ -1077,8 +1077,8 @@ function switchTab(tab) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(`${tab}-view`).classList.add('active');
 
-  // Update nav buttons
-  document.querySelectorAll('.nav-btn').forEach(btn => {
+  // Update nav buttons (only tab buttons, not the About button)
+  document.querySelectorAll('.nav-btn[data-tab]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tab === tab);
     btn.setAttribute('aria-selected', btn.dataset.tab === tab);
   });

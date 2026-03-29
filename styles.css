@@ -165,31 +165,29 @@ input { font-family: inherit; }
   top: 0;
   left: 0;
   right: 0;
-  padding: 8px 10px;
-  padding-top: calc(8px + var(--safe-top));
+  height: var(--topbar-height);
+  padding: 0 12px;
+  padding-top: var(--safe-top);
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(to bottom, rgba(13,17,23,0.88) 0%, transparent 100%);
+  background: linear-gradient(to bottom, rgba(13,17,23,0.85) 0%, transparent 100%);
   z-index: 400;
   pointer-events: none;
 }
 
 .topbar-title {
-  flex: 1;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text);
-  text-align: center;
+  letter-spacing: -0.3px;
   pointer-events: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
+#locate-btn,
 .map-icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -204,6 +202,7 @@ input { font-family: inherit; }
   transition: transform 0.15s, background 0.15s;
 }
 
+#locate-btn:active,
 .map-icon-btn:active { transform: scale(0.9); background: var(--surface-2); }
 
 /* Leaflet zoom controls — bottom-right, above nav bar */
