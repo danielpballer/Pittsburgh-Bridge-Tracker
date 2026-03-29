@@ -619,11 +619,11 @@ function initMap() {
     attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(state.map);
 
-  // Move attribution to top-right to keep bottom clear
-  state.map.attributionControl.setPosition('topright');
+  // Move attribution to bottom-left (small, out of the way)
+  state.map.attributionControl.setPosition('bottomleft');
 
-  // Add zoom control top-right
-  L.control.zoom({ position: 'topright' }).addTo(state.map);
+  // Zoom control bottom-right, above the nav bar
+  L.control.zoom({ position: 'bottomright' }).addTo(state.map);
 
   // Add all bridge markers
   for (const bridge of state.bridges) {

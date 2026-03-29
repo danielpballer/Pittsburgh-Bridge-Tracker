@@ -201,13 +201,21 @@ input { font-family: inherit; }
 
 #locate-btn:active { transform: scale(0.9); background: var(--surface-2); }
 
-/* Info button pushed to the right end of the topbar */
+/* Info button sits left of the title, next to locate */
 .topbar-info-btn {
-  margin-left: auto;
   pointer-events: auto;
   transition: transform 0.15s, background 0.15s;
 }
 .topbar-info-btn:active { transform: scale(0.9); background: var(--surface-2); }
+
+/* Push Leaflet zoom controls above the bottom nav bar */
+#map-view .leaflet-bottom {
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + 8px);
+}
+/* Keep attribution out of the way */
+#map-view .leaflet-bottom.leaflet-left {
+  bottom: calc(var(--nav-height) + var(--safe-bottom));
+}
 
 /* ─── GPS BANNER ─────────────────────────────────────────────── */
 #gps-banner {
