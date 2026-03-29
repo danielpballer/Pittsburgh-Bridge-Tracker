@@ -159,43 +159,58 @@ input { font-family: inherit; }
 .leaflet-tile { filter: brightness(0.85) saturate(0.8); }
 
 /* ─── MAP TOP BAR ────────────────────────────────────────────── */
-/* Floating button cluster — top-left, matching Leaflet control style */
+/* ─── MAP TOP BAR ────────────────────────────────────────────── */
 #map-topbar {
   position: absolute;
-  top: calc(10px + var(--safe-top));
-  left: 10px;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 10px;
+  padding-top: calc(8px + var(--safe-top));
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(to bottom, rgba(13,17,23,0.88) 0%, transparent 100%);
   z-index: 400;
   pointer-events: none;
 }
 
-#locate-btn,
-.topbar-info-btn {
-  width: 34px;
-  height: 34px;
+.topbar-title {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.map-icon-btn {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  border: 2px solid rgba(0,0,0,0.2);
-  border-radius: 4px;
-  font-size: 18px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  font-size: 20px;
+  box-shadow: var(--shadow-sm);
   pointer-events: auto;
   cursor: pointer;
-  transition: background 0.12s;
+  transition: transform 0.15s, background 0.15s;
 }
 
-#locate-btn:active,
-.topbar-info-btn:active { background: #f4f4f4; }
+.map-icon-btn:active { transform: scale(0.9); background: var(--surface-2); }
 
-/* Push Leaflet zoom controls above the bottom nav bar */
-#map-view .leaflet-bottom {
+/* Leaflet zoom controls — bottom-right, above nav bar */
+#map-view .leaflet-bottom.leaflet-right {
   bottom: calc(var(--nav-height) + var(--safe-bottom) + 8px);
 }
-/* Attribution sits flush at the bottom edge */
+/* Attribution — bottom-left, flush to nav bar */
 #map-view .leaflet-bottom.leaflet-left {
   bottom: calc(var(--nav-height) + var(--safe-bottom));
 }
