@@ -465,21 +465,6 @@
     "wikipedia": null
   },
   {
-    "id": "bridge_037",
-    "name": "Brilliant Avenue Bridge",
-    "latitude": 40.4758,
-    "longitude": -79.9229,
-    "yearBuilt": 1929,
-    "length": null,
-    "type": "steel viaduct",
-    "crosses": "Railroad tracks / valley",
-    "carries": "Brilliant Avenue",
-    "neighborhood": "Stanton Heights / Morningside",
-    "funFact": "This massive steel viaduct towers over the valley between Stanton Heights and Morningside, giving travelers a stunning bird's-eye view of Pittsburgh's hillside neighborhoods stretching off in every direction!",
-    "image": null,
-    "wikipedia": null
-  },
-  {
     "id": "bridge_041",
     "name": "Larimer Avenue Bridge",
     "latitude": 40.4674764,
