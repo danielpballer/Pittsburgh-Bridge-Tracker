@@ -188,6 +188,7 @@ function showToast(msg, durationMs = 3000) {
 /* ─── EXPORT / IMPORT ────────────────────────────────────────── */
 function initBackupButtons() {
   document.getElementById('export-btn').addEventListener('click', exportCheckins);
+  document.getElementById('share-card-btn').addEventListener('click', generateShareCard);
   document.getElementById('import-btn').addEventListener('click', () => {
     document.getElementById('import-file-input').click();
   });
@@ -234,6 +235,265 @@ function exportCheckins() {
     URL.revokeObjectURL(url);
     showToast('Backup saved!');
   }
+}
+
+/* ─── SHARE PROGRESS CARD ────────────────────────────────────── */
+function generateShareCard() {
+  showToast('Generating card…');
+
+  // ── Canvas setup ─────────────────────────────────────────────
+  const W = 1080, H = 1350;
+  const canvas = document.createElement('canvas');
+  canvas.width  = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // ── Design tokens (match app theme) ──────────────────────────
+  const GOLD  = '#FFB612';
+  const BLUE  = '#4A90D9';
+  const SURF  = '#161b22';
+  const SURF2 = '#21262d';
+  const SURF3 = '#30363d';
+  const TEXT  = '#e6edf3';
+  const MUTED = '#8b949e';
+  const DIM   = '#484f58';
+  const P     = 80;   // horizontal padding
+
+  // ── Gather stats ─────────────────────────────────────────────
+  const total   = state.bridges.length;
+  const crossed = getCrossedCount();
+  const pct     = total > 0 ? crossed / total * 100 : 0;
+
+  const sortedCI = Object.entries(state.checkins)
+    .sort(([,a],[,b]) => a.date < b.date ? -1 : 1);
+
+  const crossedBridges = state.bridges.filter(b => state.checkins[b.id]);
+  const neighCount = new Set(
+    crossedBridges.filter(b => b.neighborhood).map(b => b.neighborhood)
+  ).size;
+
+  const badgeResults = evaluateBadges();
+  const badgesEarned = badgeResults.filter(r => r.earned).length;
+  const badgesTotal  = badgeResults.length;
+
+  const firstCI    = sortedCI[0];
+  const lastCI     = sortedCI[sortedCI.length - 1];
+  const firstBridge = firstCI ? state.bridges.find(b => b.id === firstCI[0]) : null;
+  const lastBridge  = lastCI  ? state.bridges.find(b => b.id === lastCI[0])  : null;
+
+  // ── Helpers ───────────────────────────────────────────────────
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.arcTo(x + w, y,     x + w, y + r,     r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+    ctx.lineTo(x + r, y + h);
+    ctx.arcTo(x, y + h, x, y + h - r, r);
+    ctx.lineTo(x, y + r);
+    ctx.arcTo(x, y,     x + r, y,     r);
+    ctx.closePath();
+  }
+
+  function truncate(text, maxW) {
+    if (ctx.measureText(text).width <= maxW) return text;
+    while (text.length && ctx.measureText(text + '…').width > maxW) text = text.slice(0, -1);
+    return text + '…';
+  }
+
+  // ── Background gradient ───────────────────────────────────────
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+  bgGrad.addColorStop(0, '#0d1117');
+  bgGrad.addColorStop(1, '#121920');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle radial glow behind number
+  if (crossed > 0) {
+    const glow = ctx.createRadialGradient(W / 2, 330, 0, W / 2, 330, 340);
+    glow.addColorStop(0, 'rgba(255,182,18,0.07)');
+    glow.addColorStop(1, 'rgba(255,182,18,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // Gold top accent bar
+  ctx.fillStyle = GOLD;
+  ctx.fillRect(0, 0, W, 8);
+
+  // ── App header ────────────────────────────────────────────────
+  ctx.textAlign = 'center';
+  ctx.fillStyle = MUTED;
+  ctx.font = '500 30px Arial, sans-serif';
+  ctx.fillText('Pittsburgh Bridge Tracker', W / 2, 62);
+
+  // Bridge emoji
+  ctx.font = '76px Arial, sans-serif';
+  ctx.fillText('🌉', W / 2, 150);
+
+  // ── Main stat ─────────────────────────────────────────────────
+  const numberFont = crossed >= 100 ? 150 : (crossed >= 10 ? 190 : 220);
+  ctx.fillStyle = crossed > 0 ? GOLD : MUTED;
+  ctx.font      = `bold ${numberFont}px Arial, sans-serif`;
+  ctx.fillText(String(crossed), W / 2, 378);
+
+  ctx.fillStyle = TEXT;
+  ctx.font      = '500 44px Arial, sans-serif';
+  ctx.fillText(`of ${total} bridges crossed`, W / 2, 446);
+
+  if (crossed === 0) {
+    ctx.fillStyle = DIM;
+    ctx.font = '400 32px Arial, sans-serif';
+    ctx.fillText('The adventure begins! 🚀', W / 2, 498);
+  }
+
+  // ── Progress bar ─────────────────────────────────────────────
+  const barTop = 520;
+  const barW   = W - P * 2;
+  const barH2  = 22;
+
+  roundRect(P, barTop, barW, barH2, 11);
+  ctx.fillStyle = SURF2;
+  ctx.fill();
+
+  if (pct > 0) {
+    const fillW = Math.max(barH2, barW * pct / 100);
+    const fGrad = ctx.createLinearGradient(P, 0, P + barW, 0);
+    fGrad.addColorStop(0, GOLD);
+    fGrad.addColorStop(1, '#ffd060');
+    roundRect(P, barTop, fillW, barH2, 11);
+    ctx.fillStyle = fGrad;
+    ctx.fill();
+  }
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = MUTED;
+  ctx.font      = '500 28px Arial, sans-serif';
+  ctx.fillText(`${pct.toFixed(1)}% complete`, W / 2, barTop + barH2 + 46);
+
+  // ── Divider ───────────────────────────────────────────────────
+  const divY = 650;
+  ctx.strokeStyle = SURF2;
+  ctx.lineWidth   = 2;
+  ctx.beginPath();
+  ctx.moveTo(P, divY);
+  ctx.lineTo(W - P, divY);
+  ctx.stroke();
+
+  // ── Stat boxes ────────────────────────────────────────────────
+  const boxGap = 20;
+  const boxW   = (W - P * 2 - boxGap) / 2;
+  const boxH2  = 162;
+  const boxTop = 672;
+  const boxR   = 18;
+
+  // Box 1: Neighborhoods
+  roundRect(P, boxTop, boxW, boxH2, boxR);
+  ctx.fillStyle   = SURF;
+  ctx.fill();
+  ctx.strokeStyle = SURF3;
+  ctx.lineWidth   = 1;
+  ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = DIM;
+  ctx.font      = '700 20px Arial, sans-serif';
+  ctx.fillText('NEIGHBORHOODS', P + boxW / 2, boxTop + 40);
+
+  ctx.fillStyle = BLUE;
+  ctx.font      = `bold ${neighCount >= 10 ? 72 : 86}px Arial, sans-serif`;
+  ctx.fillText(String(neighCount), P + boxW / 2, boxTop + 126);
+
+  ctx.fillStyle = MUTED;
+  ctx.font      = '400 22px Arial, sans-serif';
+  ctx.fillText('explored', P + boxW / 2, boxTop + 152);
+
+  // Box 2: Badges
+  const b2X = P + boxW + boxGap;
+  roundRect(b2X, boxTop, boxW, boxH2, boxR);
+  ctx.fillStyle   = SURF;
+  ctx.fill();
+  ctx.strokeStyle = SURF3;
+  ctx.lineWidth   = 1;
+  ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = DIM;
+  ctx.font      = '700 20px Arial, sans-serif';
+  ctx.fillText('BADGES EARNED', b2X + boxW / 2, boxTop + 40);
+
+  ctx.fillStyle = GOLD;
+  ctx.font      = `bold ${badgesEarned >= 10 ? 72 : 86}px Arial, sans-serif`;
+  ctx.fillText(String(badgesEarned), b2X + boxW / 2, boxTop + 116);
+
+  ctx.fillStyle = MUTED;
+  ctx.font      = '500 26px Arial, sans-serif';
+  ctx.fillText(`of ${badgesTotal}`, b2X + boxW / 2, boxTop + 152);
+
+  // ── Bridge name rows ──────────────────────────────────────────
+  const nameMaxW  = W - P * 2;
+  let   nameY     = boxTop + boxH2 + 50;
+  const lineH     = 44;
+
+  function drawBridgeStat(label, bridgeName, date) {
+    ctx.textAlign = 'left';
+    ctx.fillStyle = DIM;
+    ctx.font      = '700 20px Arial, sans-serif';
+    ctx.fillText(label, P, nameY);
+    nameY += lineH - 4;
+
+    ctx.font      = '600 34px Arial, sans-serif';
+    ctx.fillStyle = TEXT;
+    ctx.fillText(truncate(bridgeName, nameMaxW), P, nameY);
+    nameY += 38;
+
+    ctx.font      = '400 26px Arial, sans-serif';
+    ctx.fillStyle = MUTED;
+    ctx.fillText(date, P, nameY);
+    nameY += 52;
+  }
+
+  if (firstBridge && firstCI) {
+    drawBridgeStat('FIRST BRIDGE CROSSED', firstBridge.name, fmtDate(firstCI[1].date));
+  }
+  if (lastBridge && lastCI && lastBridge.id !== firstBridge?.id) {
+    drawBridgeStat('MOST RECENT', lastBridge.name, fmtDate(lastCI[1].date));
+  }
+
+  // ── Tagline ───────────────────────────────────────────────────
+  ctx.textAlign = 'center';
+  ctx.fillStyle = DIM;
+  ctx.font      = '400 28px Arial, sans-serif';
+  ctx.fillText('Exploring Pittsburgh, one bridge at a time 🌉', W / 2, H - 60);
+
+  // Blue bottom accent bar
+  ctx.fillStyle = BLUE;
+  ctx.fillRect(0, H - 8, W, 8);
+
+  // ── Export as PNG ─────────────────────────────────────────────
+  canvas.toBlob(blob => {
+    if (!blob) { showToast('⚠️ Could not generate card.'); return; }
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const fname   = `pgh-bridges-${dateStr}.png`;
+    const file    = new File([blob], fname, { type: 'image/png' });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: 'My Pittsburgh Bridge Progress' })
+        .then(() => showToast('Card shared!'))
+        .catch(err => { if (err.name !== 'AbortError') showToast('Share cancelled.'); });
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href     = url;
+      a.download = fname;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Progress card downloaded!');
+    }
+  }, 'image/png');
 }
 
 function readBackupFile(file) {
