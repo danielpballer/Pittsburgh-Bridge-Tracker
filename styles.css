@@ -205,9 +205,9 @@ input { font-family: inherit; }
 #locate-btn:active,
 .map-icon-btn:active { transform: scale(0.9); background: var(--surface-2); }
 
-/* Leaflet zoom controls — bottom-right, above nav bar */
-#map-view .leaflet-bottom.leaflet-right {
-  bottom: calc(var(--nav-height) + var(--safe-bottom) + 8px);
+/* Zoom controls are top-right; push them below the topbar */
+#map-view .leaflet-top.leaflet-right {
+  top: calc(var(--topbar-height) + 8px);
 }
 /* Attribution — bottom-left, flush to nav bar */
 #map-view .leaflet-bottom.leaflet-left {

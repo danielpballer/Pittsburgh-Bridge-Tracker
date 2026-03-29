@@ -622,8 +622,8 @@ function initMap() {
   // Move attribution to bottom-left (small, out of the way)
   state.map.attributionControl.setPosition('bottomleft');
 
-  // Zoom control bottom-right, above the nav bar
-  L.control.zoom({ position: 'bottomright' }).addTo(state.map);
+  // Zoom control top-right, below the topbar
+  L.control.zoom({ position: 'topright' }).addTo(state.map);
 
   // Add all bridge markers
   for (const bridge of state.bridges) {
