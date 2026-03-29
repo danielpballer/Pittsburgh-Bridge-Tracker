@@ -117,6 +117,7 @@ async function initApp() {
   initCollectionFilters();
   initBackupButtons();
   initBadgePopup();
+  initAboutModal();
 
   hideLoading();
   initNav();   // wire up buttons first so UI is always responsive
@@ -1833,11 +1834,32 @@ function escHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+/* ─── ABOUT MODAL ────────────────────────────────────────────── */
+function initAboutModal() {
+  document.getElementById('info-btn').addEventListener('click', openAboutModal);
+  document.getElementById('about-close-btn').addEventListener('click', closeAboutModal);
+  document.getElementById('about-modal-backdrop').addEventListener('click', closeAboutModal);
+}
+
+function openAboutModal() {
+  document.getElementById('about-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAboutModal() {
+  document.getElementById('about-modal').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
 /* ─── KEYBOARD: close modal on Escape ───────────────────────── */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (!document.getElementById('celebration').classList.contains('hidden')) {
       hideCelebration();
+    } else if (!document.getElementById('badge-popup').classList.contains('hidden')) {
+      document.getElementById('badge-popup').classList.add('hidden');
+    } else if (!document.getElementById('about-modal').classList.contains('hidden')) {
+      closeAboutModal();
     } else if (!document.getElementById('bridge-modal').classList.contains('hidden')) {
       closeBridgeModal();
     }

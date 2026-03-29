@@ -51,6 +51,9 @@
           📍
         </button>
         <span class="topbar-title">🌉 Bridge Tracker</span>
+        <button id="info-btn" class="icon-btn topbar-info-btn" aria-label="About this app" title="About">
+          ℹ️
+        </button>
       </div>
 
       <!-- GPS status banner -->
@@ -352,6 +355,73 @@
         <button id="import-confirm-ok" class="btn btn-primary btn-lg btn-full">Restore</button>
         <button id="import-confirm-cancel" class="btn btn-ghost btn-lg btn-full">Cancel</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       ABOUT MODAL
+  ═══════════════════════════════════════════ -->
+  <div id="about-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+    <div class="modal-backdrop" id="about-modal-backdrop"></div>
+    <div class="modal-sheet about-sheet">
+      <div class="modal-drag-handle"></div>
+      <button class="modal-close-btn" id="about-close-btn" aria-label="Close about">✕</button>
+
+      <h2 class="about-title" id="about-modal-title">🌉 Pittsburgh Bridge Tracker</h2>
+
+      <!-- Section 1: About -->
+      <div class="about-section">
+        <h3 class="about-section-heading">About This App</h3>
+        <p class="about-text">
+          Pittsburgh is famously known as "The City of Bridges" with approximately 446 bridges —
+          more than any other city in the world. This app was built as a family project after
+          moving to Pittsburgh. My daughter was so excited about all the bridges that we decided
+          to see how many we could cross during our time living here.
+        </p>
+        <p class="about-text">
+          Whether you're a lifelong Pittsburgher or new to the city, grab your family and see
+          how many you can find! 🏆
+        </p>
+      </div>
+
+      <!-- Section 2: How to Use -->
+      <div class="about-section">
+        <h3 class="about-section-heading">How to Use</h3>
+        <ul class="about-list">
+          <li><strong>🗺️ Map</strong> — Shows all Pittsburgh bridges. Your live location appears as a blue dot. Gray markers are uncrossed, gold markers are crossed. Tap any bridge for details.</li>
+          <li><strong>📍 Nearest Bridge</strong> — The card at the bottom of the map shows the closest uncrossed bridge and your distance from it. Tap Navigate for turn-by-turn directions.</li>
+          <li><strong>✅ Check In</strong> — When you're near a bridge, open its info card and tap Check In to mark it crossed.</li>
+          <li><strong>🏆 Collection</strong> — View your progress, filter bridges by neighborhood or type, and sort your list however you like.</li>
+          <li><strong>🏅 Badges</strong> — Earn achievements for milestones like crossing all the river bridges or exploring 10 different neighborhoods.</li>
+          <li><strong>🔍 Search</strong> — Find any bridge by name or neighborhood.</li>
+          <li><strong>📤 Backup &amp; Restore</strong> — Export your check-in data to save a backup, or import a previous backup to pick up where you left off — great for switching devices.</li>
+          <li><strong>📊 Share</strong> — Generate a shareable progress card to show friends and family how many bridges you've crossed.</li>
+        </ul>
+      </div>
+
+      <!-- Section 3: Built By -->
+      <div class="about-section">
+        <h3 class="about-section-heading">Built By</h3>
+        <p class="about-text">
+          Built by <a href="https://github.com/danielpballer" target="_blank" rel="noopener" class="about-link">Dan Baller</a>.
+          The full source code is available on
+          <a href="https://github.com/danielpballer/Pittsburgh-Bridge-Tracker" target="_blank" rel="noopener" class="about-link">GitHub</a>.
+        </p>
+        <p class="about-text">
+          Built with <a href="https://claude.ai" target="_blank" rel="noopener" class="about-link">Claude Code by Anthropic</a> 🤖
+        </p>
+      </div>
+
+      <!-- Section 4: Data Sources -->
+      <div class="about-section">
+        <h3 class="about-section-heading">Data Sources</h3>
+        <p class="about-text">
+          Bridge data sourced from the City of Pittsburgh Open Data Portal, the Western
+          Pennsylvania Regional Data Center, and OpenStreetMap. Bridge photos provided
+          by Wikipedia.
+        </p>
+      </div>
+
     </div>
   </div>
 

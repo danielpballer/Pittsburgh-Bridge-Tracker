@@ -201,6 +201,14 @@ input { font-family: inherit; }
 
 #locate-btn:active { transform: scale(0.9); background: var(--surface-2); }
 
+/* Info button pushed to the right end of the topbar */
+.topbar-info-btn {
+  margin-left: auto;
+  pointer-events: auto;
+  transition: transform 0.15s, background 0.15s;
+}
+.topbar-info-btn:active { transform: scale(0.9); background: var(--surface-2); }
+
 /* ─── GPS BANNER ─────────────────────────────────────────────── */
 #gps-banner {
   position: absolute;
@@ -1300,6 +1308,79 @@ input { font-family: inherit; }
   white-space: pre-line;
   margin: 12px 0 20px;
 }
+
+/* ─── ABOUT MODAL ────────────────────────────────────────────── */
+.about-sheet {
+  max-height: 92vh;
+  padding: 20px 20px 32px;
+  padding-bottom: calc(32px + var(--safe-bottom));
+}
+
+.about-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 20px;
+  padding-right: 36px; /* clear the close button */
+}
+
+.about-section {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.about-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.about-section-heading {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.about-text {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.about-text:last-child { margin-bottom: 0; }
+
+.about-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+}
+
+.about-list li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  padding-left: 4px;
+}
+
+.about-list li strong {
+  color: var(--text);
+}
+
+.about-link {
+  color: var(--blue);
+  text-decoration: underline;
+  text-decoration-color: rgba(74, 144, 217, 0.4);
+  text-underline-offset: 2px;
+}
+
+.about-link:hover { text-decoration-color: var(--blue); }
 
 /* ─── TOAST ──────────────────────────────────────────────────── */
 .toast {
