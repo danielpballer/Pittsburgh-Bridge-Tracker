@@ -995,6 +995,13 @@ input { font-family: inherit; }
 }
 
 /* ─── LEAFLET CUSTOM MARKERS ─────────────────────────────────── */
+/* Remove the default white/black background Leaflet adds to div icons */
+.leaflet-div-icon {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 .bridge-marker {
   width: 28px;
   height: 28px;
