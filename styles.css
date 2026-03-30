@@ -1029,6 +1029,51 @@ input { font-family: inherit; }
   box-shadow: 0 0 0 3px rgba(74,144,217,0.3), 0 2px 8px rgba(0,0,0,0.4);
 }
 
+/* ─── MARKER CLUSTER STYLES ─────────────────────────────────── */
+.bridge-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.18);
+  font-weight: 700;
+  font-family: var(--font);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.45);
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+.bridge-cluster:active { transform: scale(0.9); }
+.bridge-cluster span { line-height: 1; }
+
+.bridge-cluster-sm { width: 36px; height: 36px; font-size: 13px; }
+.bridge-cluster-md { width: 44px; height: 44px; font-size: 15px; }
+.bridge-cluster-lg { width: 52px; height: 52px; font-size: 17px; }
+
+/* No bridges crossed yet — slate blue */
+.bridge-cluster-none {
+  background: #3d4558;
+  color: #c8cfe0;
+  border-color: rgba(255,255,255,0.12);
+}
+/* Some bridges crossed — teal accent */
+.bridge-cluster-some {
+  background: #1e5f78;
+  color: #9de2f8;
+  border-color: rgba(100,210,245,0.25);
+  box-shadow: 0 2px 8px rgba(0,160,200,0.35);
+}
+/* All bridges in cluster crossed — gold */
+.bridge-cluster-all {
+  background: var(--gold);
+  color: #1a1f2e;
+  border-color: rgba(255,255,255,0.3);
+  box-shadow: 0 2px 12px rgba(255,182,18,0.55);
+}
+
+/* Override markercluster's default background so only our styles show */
+.leaflet-cluster-anim .leaflet-marker-icon,
+.leaflet-cluster-anim .leaflet-marker-shadow { transition: left 0.3s ease-out, top 0.3s ease-out; }
+
 /* Leaflet popup overrides */
 .leaflet-popup-content-wrapper {
   background: var(--surface) !important;

@@ -13,6 +13,7 @@ const state = {
   userAccuracy: null,
   map: null,
   markers: {},        // { bridgeId: L.marker }
+  markerCluster: null,
   userMarker: null,
   userCircle: null,
   watchId: null,
@@ -555,8 +556,12 @@ function applyImport(validCheckins, count, backupDate) {
   state.checkins = validCheckins;
   saveCheckins();
 
-  // Refresh map markers
-  state.bridges.forEach(b => updateMarkerIcon(b.id));
+  // Refresh all map markers then do one cluster redraw
+  state.bridges.forEach(b => {
+    const marker = state.markers[b.id];
+    if (marker) marker.setIcon(makeMarkerIcon(isCheckedIn(b.id)));
+  });
+  if (state.markerCluster) state.markerCluster.refreshClusters();
   updateNearestCard();
 
   if (state.activeTab === 'collection') renderCollection();
@@ -625,7 +630,36 @@ function initMap() {
   // Zoom control top-right, below the topbar
   L.control.zoom({ position: 'topright' }).addTo(state.map);
 
-  // Add all bridge markers
+  // Marker cluster group — styled to match dark theme
+  state.markerCluster = L.markerClusterGroup({
+    showCoverageOnHover: false,
+    spiderfyOnMaxZoom: true,
+    maxClusterRadius: 80,
+    disableClusteringAtZoom: 16,
+    iconCreateFunction: function(cluster) {
+      const markers = cluster.getAllChildMarkers();
+      const total = markers.length;
+      const crossedCount = markers.filter(m => isCheckedIn(m.options.bridgeId)).length;
+
+      const sizeClass = total >= 25 ? 'bridge-cluster-lg'
+                      : total >= 10 ? 'bridge-cluster-md'
+                      :               'bridge-cluster-sm';
+      const stateClass = crossedCount === 0     ? 'bridge-cluster-none'
+                       : crossedCount === total  ? 'bridge-cluster-all'
+                       :                           'bridge-cluster-some';
+      const size = total >= 25 ? 52 : total >= 10 ? 44 : 36;
+
+      return L.divIcon({
+        html: `<div class="bridge-cluster ${sizeClass} ${stateClass}"><span>${total}</span></div>`,
+        className: '',
+        iconSize:   L.point(size, size),
+        iconAnchor: L.point(size / 2, size / 2),
+      });
+    },
+  });
+  state.map.addLayer(state.markerCluster);
+
+  // Add all bridge markers to the cluster group
   for (const bridge of state.bridges) {
     addBridgeMarker(bridge);
   }
@@ -650,7 +684,8 @@ function addBridgeMarker(bridge) {
     icon: makeMarkerIcon(crossed),
     title: bridge.name,
     riseOnHover: true,
-  }).addTo(state.map);
+    bridgeId: bridge.id,  // used by iconCreateFunction to compute crossed status
+  });
 
   marker.bindPopup(() => buildPopupHTML(bridge), {
     maxWidth: 260,
@@ -663,6 +698,7 @@ function addBridgeMarker(bridge) {
   });
 
   state.markers[bridge.id] = marker;
+  state.markerCluster.addLayer(marker);
 }
 
 function buildPopupHTML(bridge) {
@@ -695,7 +731,10 @@ function attachPopupListeners(bridge) {
 
 function updateMarkerIcon(bridgeId) {
   const marker = state.markers[bridgeId];
-  if (marker) marker.setIcon(makeMarkerIcon(isCheckedIn(bridgeId)));
+  if (marker) {
+    marker.setIcon(makeMarkerIcon(isCheckedIn(bridgeId)));
+    if (state.markerCluster) state.markerCluster.refreshClusters(marker);
+  }
 }
 
 function centerOnUser() {
