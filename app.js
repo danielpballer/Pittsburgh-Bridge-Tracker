@@ -634,8 +634,8 @@ function initMap() {
   state.markerCluster = L.markerClusterGroup({
     showCoverageOnHover: false,
     spiderfyOnMaxZoom: true,
-    maxClusterRadius: 80,
-    disableClusteringAtZoom: 16,
+    maxClusterRadius: 40,
+    disableClusteringAtZoom: 14,
     iconCreateFunction: function(cluster) {
       const markers = cluster.getAllChildMarkers();
       const total = markers.length;
