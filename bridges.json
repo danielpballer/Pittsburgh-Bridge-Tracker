@@ -962,8 +962,8 @@
   {
     "id": "bridge_094",
     "name": "Centre Avenue Bridge",
-    "latitude": 40.4476,
-    "longitude": -79.9793,
+    "latitude": 40.45459454,
+    "longitude": -79.9430156,
     "yearBuilt": null,
     "length": null,
     "type": "concrete girder",
@@ -1022,8 +1022,8 @@
   {
     "id": "bridge_098",
     "name": "Schenley Park Bridle Path Bridge",
-    "latitude": 40.4345,
-    "longitude": -79.9469,
+    "latitude": 40.43309349,
+    "longitude": -79.94757475,
     "yearBuilt": 1905,
     "length": null,
     "type": "stone arch",
