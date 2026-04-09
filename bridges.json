@@ -930,36 +930,6 @@
     "wikipedia": null
   },
   {
-    "id": "bridge_092",
-    "name": "Homewood Avenue Bridge",
-    "latitude": 40.4484,
-    "longitude": -79.8946,
-    "yearBuilt": null,
-    "length": null,
-    "type": "steel girder",
-    "crosses": "CSX railroad tracks",
-    "carries": "Homewood Avenue",
-    "neighborhood": "Homewood / Point Breeze",
-    "funFact": "Homewood is the birthplace of famous Pittsburgh writer August Wilson, who won two Pulitzer Prizes for his plays set in this neighborhood — his 'Pittsburgh Cycle' of ten plays tells the story of African American life in Pittsburgh across the entire 20th century!",
-    "image": null,
-    "wikipedia": null
-  },
-  {
-    "id": "bridge_093",
-    "name": "Beckett Street Bridge",
-    "latitude": 40.4572,
-    "longitude": -80.0211,
-    "yearBuilt": null,
-    "length": null,
-    "type": "steel girder",
-    "crosses": "railroad tracks",
-    "carries": "Beckett Street",
-    "neighborhood": "Manchester / North Side",
-    "funFact": "Manchester was one of Pittsburgh's first industrial neighborhoods in the 1800s, and today it is one of the most actively revitalized communities on the North Side — its beautiful Victorian brick rowhouses are being restored to their original glory!",
-    "image": null,
-    "wikipedia": null
-  },
-  {
     "id": "bridge_094",
     "name": "Centre Avenue Bridge",
     "latitude": 40.45459454,
