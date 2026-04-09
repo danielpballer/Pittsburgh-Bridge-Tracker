@@ -945,21 +945,6 @@
     "wikipedia": null
   },
   {
-    "id": "bridge_095",
-    "name": "Irvine Street Bridge",
-    "latitude": 40.4145,
-    "longitude": -79.9522,
-    "yearBuilt": null,
-    "length": null,
-    "type": "steel girder",
-    "crosses": "railroad tracks",
-    "carries": "Irvine Street",
-    "neighborhood": "Hazelwood",
-    "funFact": "Hazelwood is undergoing one of Pittsburgh's biggest transformations — the former LTV Steel site nearby is now Hazelwood Green, a 178-acre innovation campus that is home to new companies, community gardens, and one of Pittsburgh's largest surviving industrial buildings!",
-    "image": null,
-    "wikipedia": null
-  },
-  {
     "id": "bridge_096",
     "name": "Route 51 Bridge at Knoxville",
     "latitude": 40.4082,
