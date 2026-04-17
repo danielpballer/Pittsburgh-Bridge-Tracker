@@ -945,36 +945,6 @@
     "wikipedia": null
   },
   {
-    "id": "bridge_096",
-    "name": "Route 51 Bridge at Knoxville",
-    "latitude": 40.4082,
-    "longitude": -79.9843,
-    "yearBuilt": null,
-    "length": null,
-    "type": "steel girder",
-    "crosses": "Saw Mill Run tributary / Knoxville hollow",
-    "carries": "Route 51 / Brownsville Road",
-    "neighborhood": "Knoxville / Mt. Oliver",
-    "funFact": "Route 51 is the main road connecting Pittsburgh's South Hills communities to downtown, carrying millions of drivers over the steep hillside terrain where early settlers once traveled on mud tracks cut through dense Pennsylvania wilderness!",
-    "image": null,
-    "wikipedia": null
-  },
-  {
-    "id": "bridge_097",
-    "name": "Carrick Avenue Bridge",
-    "latitude": 40.3893,
-    "longitude": -79.9713,
-    "yearBuilt": null,
-    "length": null,
-    "type": "concrete girder",
-    "crosses": "Saw Mill Run tributary",
-    "carries": "Carrick Avenue",
-    "neighborhood": "Carrick",
-    "funFact": "Carrick is named for Carrickfergus, a town in Northern Ireland, reflecting the wave of Irish and Scots-Irish immigrants who settled Pittsburgh's South Side neighborhoods in the 1800s and built many of the sturdy brick homes still standing there today!",
-    "image": null,
-    "wikipedia": null
-  },
-  {
     "id": "bridge_098",
     "name": "Schenley Park Bridle Path Bridge",
     "latitude": 40.43309349,
