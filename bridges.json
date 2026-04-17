@@ -975,25 +975,10 @@
     "wikipedia": null
   },
   {
-    "id": "bridge_102",
-    "name": "Riverview Avenue Bridge",
-    "latitude": 40.4808,
-    "longitude": -80.0228,
-    "yearBuilt": null,
-    "length": null,
-    "type": "steel girder",
-    "crosses": "railroad tracks",
-    "carries": "Riverview Avenue",
-    "neighborhood": "Fineview / North Side",
-    "funFact": "Fineview is one of Pittsburgh's smaller hilltop neighborhoods, perched above the Ohio River on the North Side — from the heights near this bridge on a clear day you can see the West End Bridge and the Ohio River winding westward toward the Mississippi!",
-    "image": null,
-    "wikipedia": null
-  },
-  {
     "id": "bridge_103",
     "name": "Shaler Street Bridge",
-    "latitude": 40.4980,
-    "longitude": -79.9618,
+    "latitude": 40.433356,
+    "longitude": -80.028662,
     "yearBuilt": null,
     "length": null,
     "type": "concrete girder",
