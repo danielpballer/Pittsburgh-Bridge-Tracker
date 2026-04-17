@@ -1036,9 +1036,9 @@
   },
   {
     "id": "bridge_107",
-    "name": "Shady Liberty Bridge",
-    "latitude": 40.46210,
-    "longitude": -79.92844,
+    "name": "Busway Pedestrian Bridge",
+    "latitude": 40.459571,
+    "longitude": -79.922378,
     "yearBuilt": null,
     "length": null,
     "type": "pedestrian footbridge",
