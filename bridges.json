@@ -705,21 +705,6 @@
     "wikipedia": null
   },
   {
-    "id": "bridge_064",
-    "name": "California Avenue Bridge",
-    "latitude": 40.458681,
-    "longitude": -80.023526,
-    "yearBuilt": null,
-    "length": null,
-    "type": "steel girder",
-    "crosses": "Railroad tracks",
-    "carries": "California Avenue",
-    "neighborhood": "California-Kirkbride / North Side",
-    "funFact": "California Avenue on Pittsburgh's North Side was named with the same westward optimism that sent thousands of Pittsburghers racing to California during the 1849 Gold Rush — the far North Side neighborhood still carries that adventurous spirit in its name today!",
-    "image": null,
-    "wikipedia": null
-  },
-  {
     "id": "bridge_065",
     "name": "Frick Park Footbridge",
     "latitude": 40.427729,
@@ -1155,21 +1140,6 @@
     "wikipedia": null
   },
   {
-    "id": "bridge_115",
-    "name": "Ridge Avenue Bridge",
-    "latitude": 40.45120,
-    "longitude": -80.01027,
-    "yearBuilt": null,
-    "length": null,
-    "type": "concrete girder",
-    "crosses": "railroad tracks",
-    "carries": "Ridge Avenue",
-    "neighborhood": "North Side / California-Kirkbride",
-    "funFact": "Ridge Avenue on the North Side was once called 'Millionaires' Row' in the 1880s and 1890s, lined with the grand mansions of Pittsburgh's wealthiest industrialists — though many were later demolished, the street still has some of the most historic architecture on the North Side!",
-    "image": null,
-    "wikipedia": null
-  },
-  {
     "id": "bridge_116",
     "name": "E North Avenue Bridge",
     "latitude": 40.45709,
@@ -1232,8 +1202,8 @@
   {
     "id": "bridge_120",
     "name": "Columbus Avenue Bridge",
-    "latitude": 40.45842,
-    "longitude": -80.02441,
+    "latitude": 40.458603,
+    "longitude": -80.023610,
     "yearBuilt": null,
     "length": null,
     "type": "steel girder",
@@ -1337,8 +1307,8 @@
   {
     "id": "bridge_127",
     "name": "Commercial Street Bridge",
-    "latitude": 40.42609,
-    "longitude": -79.90613,
+    "latitude": 40.425597,
+    "longitude": -79.905733,
     "yearBuilt": null,
     "length": null,
     "type": "steel girder",
@@ -1346,21 +1316,6 @@
     "carries": "Commercial Street",
     "neighborhood": "Edgewood / Swissvale",
     "funFact": "The CSX rail corridor under this bridge was once part of the Pennsylvania Railroad, one of the most powerful companies in American history — at its peak the 'Pennsy' was the largest railroad in the world and employed more workers than any other U.S. company!",
-    "image": null,
-    "wikipedia": null
-  },
-  {
-    "id": "bridge_128",
-    "name": "Goettman Street Bridge",
-    "latitude": 40.45845,
-    "longitude": -79.98768,
-    "yearBuilt": null,
-    "length": null,
-    "type": "steel girder",
-    "crosses": "railroad tracks",
-    "carries": "Goettman Street",
-    "neighborhood": "Strip District",
-    "funFact": "The Strip District gets its name from the long, narrow strip of flat land squeezed between the Allegheny River bluffs and the riverbank — this geography made it perfect for railroad sidings and warehouses that once supplied all of Pittsburgh with food, steel, and manufactured goods!",
     "image": null,
     "wikipedia": null
   }

@@ -5,7 +5,7 @@
 
 'use strict';
 
-const CACHE_NAME = 'pgh-bridge-tracker-v50';
+const CACHE_NAME = 'pgh-bridge-tracker-v51';
 
 const APP_SHELL = [
   './',
