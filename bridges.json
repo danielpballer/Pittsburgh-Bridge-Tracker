@@ -2248,5 +2248,20 @@
     "funFact": "Webster Avenue runs through the historic Hill District, once known as Pittsburgh's Crossroads of the World for its vibrant African American cultural scene — jazz legends like Billy Strayhorn and Ahmad Jamal got their start in clubs just blocks from here!",
     "image": null,
     "wikipedia": null
+  },
+  {
+    "id": "bridge_191",
+    "name": "Bigelow Boulevard Underpass",
+    "latitude": 40.4588021,
+    "longitude": -79.95740891,
+    "yearBuilt": null,
+    "length": null,
+    "type": "pedestrian underpass",
+    "crosses": "Bigelow Boulevard",
+    "carries": "pedestrian path",
+    "neighborhood": "Bloomfield / Shadyside",
+    "funFact": "Bigelow Boulevard is one of Pittsburgh's grand parkways, designed in the early 1900s as a scenic drive connecting Shadyside to Oakland — and this underpass lets pedestrians slip beneath it without ever stepping into traffic.",
+    "image": null,
+    "wikipedia": null
   }
 ]
