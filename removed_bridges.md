@@ -1,0 +1,46 @@
+# Removed Bridges
+
+Bridges previously in the dataset and intentionally removed. Do not re-add these.
+
+- Bates Street Bridge
+- Beckett Street Bridge
+- Beechview Viaduct
+- Beechwood Boulevard Bridge
+- Bigelow Boulevard Bridge
+- Bigham Street Viaduct
+- Brady Street Bridge
+- Brereton Street Bridge
+- Brilliant Avenue Bridge
+- Brilliant Branch Railroad Bridge (railroad-only)
+- Butler Street Viaduct
+- California Avenue Bridge
+- Carrick Avenue Bridge
+- Carnegie Route 50 Bridge
+- Craft Avenue Bridge
+- Crawford Street Bridge
+- Duck Hollow Trail Bridge
+- Emsworth Bridge
+- Forward Avenue Bridge
+- Friendship Avenue Bridge
+- Glenfield Bridge
+- Goettman Street Bridge
+- Hazelwood Avenue Bridge
+- Highland Drive Bridge
+- Homewood Avenue Bridge
+- Irvine Street Bridge
+- Neville Island North Channel Bridge
+- Panhandle Bridge (railroad-only)
+- Panther Hollow Road Bridge
+- Penn Avenue Bridge at Homewood
+- Ridge Avenue Bridge
+- Riverview Avenue Bridge
+- Riverview Drive Bridge
+- Route 51 Bridge at Knoxville
+- Saw Mill Run Bridge
+- Spring Hill Avenue Viaduct
+- Stanton Avenue Bridge
+- Swissvale Avenue Bridge
+- 30th Street Railroad Bridge (railroad-only)
+- Trenton Avenue Bridge
+- Troy Hill Road Bridge
+- Warrington Avenue Bridge
