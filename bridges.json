@@ -3388,5 +3388,20 @@
     "funFact": null,
     "image": null,
     "wikipedia": null
+  },
+  {
+    "id": "bridge_267",
+    "name": "Ridge Avenue Bridge",
+    "latitude": 40.451628,
+    "longitude": -80.010644,
+    "yearBuilt": null,
+    "length": null,
+    "type": null,
+    "crosses": null,
+    "carries": "Ridge Avenue",
+    "neighborhood": "North Side / Allegheny West",
+    "funFact": null,
+    "image": null,
+    "wikipedia": null
   }
 ]

@@ -32,7 +32,6 @@ Bridges previously in the dataset and intentionally removed. Do not re-add these
 - Panhandle Bridge (railroad-only)
 - Panther Hollow Road Bridge
 - Penn Avenue Bridge at Homewood
-- Ridge Avenue Bridge
 - Riverview Avenue Bridge
 - Riverview Drive Bridge
 - Route 51 Bridge at Knoxville
